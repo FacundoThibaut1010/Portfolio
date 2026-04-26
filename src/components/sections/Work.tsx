@@ -23,8 +23,6 @@ export const Work = ({ t, setIsProjectOpen }: { t: any, setIsProjectOpen: (val: 
     }
   }, [selectedProjectIndex, setIsProjectOpen]);
 
-  // Asegurate que cuando cierres el modal del proyecto, 
-  // setees setSelectedProjectIndex(null)
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -159,28 +157,30 @@ export const Work = ({ t, setIsProjectOpen }: { t: any, setIsProjectOpen: (val: 
 
       {/* --- 2. EL MODAL FIJO (AQUÍ ESTÁ EL PROBLEMA) --- */}
       {selectedProject && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-black/90 backdrop-blur-md">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 md:p-6 bg-black/90 backdrop-blur-md">
           {/* Fondo clicable para cerrar */}
           <div className="absolute inset-0" onClick={() => setSelectedProjectIndex(null)} />
 
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-[#0f0f12] border border-gray-800 w-full max-w-4xl rounded-[2rem] overflow-hidden shadow-2xl relative z-10 flex flex-col md:flex-row"
+            // CAMBIO CLAVE: max-h-[90vh] y overflow-y-auto para que el modal tenga su propio scroll si es muy largo
+            className="bg-[#0f0f12] border border-gray-800 w-full max-w-4xl max-h-[90vh] md:max-h-none rounded-[2rem] overflow-y-auto md:overflow-hidden shadow-2xl relative z-10 flex flex-col md:flex-row"
           >
             {/* Imagen del Modal */}
-            <div className="w-full md:w-1/2 h-64 md:h-auto overflow-hidden border-b md:border-b-0 md:border-r border-gray-800">
+            {/* Ajustamos el h-48 para que no ocupe media pantalla en celu */}
+            <div className="w-full md:w-1/2 h-48 md:h-auto shrink-0 overflow-hidden border-b md:border-b-0 md:border-r border-gray-800">
               <img src={selectedProject.image} className="w-full h-full object-cover" alt="Detail" />
             </div>
 
             {/* Info del Modal */}
-            <div className="w-full md:w-1/2 p-8 md:p-12 space-y-6">
+            <div className="w-full md:w-1/2 p-6 md:p-12 space-y-6 flex flex-col">
               <div className="space-y-2">
                 <span className="text-orange-500 font-mono text-xs tracking-widest uppercase">{selectedProject.type}</span>
-                <h3 className="text-4xl font-bold text-white tracking-tighter">{selectedProject.name}</h3>
+                <h3 className="text-2xl md:text-4xl font-bold text-white tracking-tighter">{selectedProject.name}</h3>
               </div>
 
-              <p className="text-gray-400 text-lg leading-relaxed font-mono">
+              <p className="text-gray-400 text-sm md:text-lg leading-relaxed font-mono">
                 {selectedProject.longDesc}
               </p>
 
@@ -190,17 +190,18 @@ export const Work = ({ t, setIsProjectOpen }: { t: any, setIsProjectOpen: (val: 
                 ))}
               </div>
 
-              <div className="pt-4 flex gap-4">
+              {/* Botones: En celu los ponemos uno arriba del otro para que no se corten */}
+              <div className="pt-4 flex flex-col sm:flex-row gap-4">
                 <a
                   href={selectedProject.github}
                   target="_blank"
-                  className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-3 px-6 rounded-xl transition-all flex items-center gap-2 text-sm"
+                  className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 text-sm w-full sm:w-auto"
                 >
                   {t.work_modal_view} <ExternalLink size={18} />
                 </a>
                 <button
                   onClick={() => setSelectedProjectIndex(null)}
-                  className="border border-gray-700 text-gray-400 hover:text-white px-6 py-3 rounded-xl text-sm transition-colors"
+                  className="border border-gray-700 text-gray-400 hover:text-white px-6 py-3 rounded-xl text-sm transition-colors w-full sm:w-auto"
                 >
                   {t.work_modal_close}
                 </button>
