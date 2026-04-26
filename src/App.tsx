@@ -40,33 +40,30 @@ const PortfolioUI = () => {
   // ScrollSpy
 
   useEffect(() => {
-
     const observer = new IntersectionObserver((entries) => {
+      // 1. Filtramos solo las secciones que se están viendo
+      const visibleSections = entries.filter(entry => entry.isIntersecting);
 
-      // Find the most prominent intersecting entry to avoid stuck states
+      if (visibleSections.length > 0) {
+        // 2. Buscamos la que tenga mayor "intersectionRatio" 
+        // (la que ocupe más porcentaje de la pantalla actual)
+        const bestSection = visibleSections.reduce((prev, current) => {
+          return (prev.intersectionRatio > current.intersectionRatio) ? prev : current;
+        });
 
-      entries.forEach((entry) => {
-
-        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
-          setActiveSection(entry.target.id);
-        }
-      });
-
+        setActiveSection(bestSection.target.id);
+      }
     }, {
-      // rootMargin es la clave: 
-      // "-20% 0px -40% 0px" crea una "faja" invisible en el centro 
-      // de la pantalla. Cuando una sección entra ahí, el Nav se activa.
-      threshold: [0.1, 0.3, 0.5],
-      rootMargin: "-25% 0px -25% 0px"
+      // 3. Configuramos varios umbrales para que sea muy sensible al movimiento
+      threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+      // Bajamos el margen superior para que el cambio sea inmediato al scrollear
+      rootMargin: "-10% 0px -40% 0px"
     });
-
-
 
     sections.forEach((sec) => {
       const el = document.getElementById(sec);
       if (el) observer.observe(el);
     });
-
 
     return () => observer.disconnect();
   }, []);
