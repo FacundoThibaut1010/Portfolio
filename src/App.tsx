@@ -47,36 +47,28 @@ const PortfolioUI = () => {
 
       entries.forEach((entry) => {
 
-        if (entry.isIntersecting) {
-
+        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
           setActiveSection(entry.target.id);
-
         }
-
       });
 
     }, {
-
-      threshold: 0.1,
-
-      rootMargin: "-20% 0px -60% 0px"
-
+      // rootMargin es la clave: 
+      // "-20% 0px -40% 0px" crea una "faja" invisible en el centro 
+      // de la pantalla. Cuando una sección entra ahí, el Nav se activa.
+      threshold: [0.1, 0.3, 0.5],
+      rootMargin: "-25% 0px -25% 0px"
     });
 
 
 
     sections.forEach((sec) => {
-
       const el = document.getElementById(sec);
-
       if (el) observer.observe(el);
-
     });
 
 
-
     return () => observer.disconnect();
-
   }, []);
 
 
