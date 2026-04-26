@@ -57,7 +57,7 @@ export const Work = ({ t }: { t: any }) => {
                 onClick={() => setSelectedProjectIndex(i)}
                 className="cursor-pointer"
               >
-                <div className="flex flex-col md:flex-row md:items-center justify-between py-12 md:py-16 border-b-[1px] border-gray-800/80 group transition-all duration-500 ease-out hover:px-8 hover:bg-[#1a1b26]/30">
+                <div className="flex flex-col md:flex-row md:items-center justify-between py-8 sm:py-12 md:py-16 border-b-[1px] border-gray-800/80 group transition-all duration-500 ease-out hover:px-4 sm:hover:px-8 hover:bg-[#1a1b26]/30">
                   <div className="flex items-center gap-12 md:gap-32 z-10">
                     <span className="text-base md:text-lg font-mono text-gray-600 tracking-widest">{String(i + 1).padStart(2, '0')}</span>
                     <h3 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-200 group-hover:text-orange-400 transition-colors uppercase tracking-tight">{p.name}</h3>
@@ -167,21 +167,21 @@ export const Work = ({ t }: { t: any }) => {
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-[#0f0f12] border border-gray-800 w-full max-w-4xl rounded-[2rem] overflow-hidden shadow-2xl relative z-10 flex flex-col md:flex-row"
+            className="bg-[#0f0f12] border border-gray-800 w-full max-w-4xl rounded-[2rem] overflow-hidden shadow-2xl relative z-10 flex flex-col md:flex-row max-h-[90vh] overflow-y-auto"
           >
             {/* Imagen del Modal */}
-            <div className="w-full md:w-1/2 h-64 md:h-auto overflow-hidden border-b md:border-b-0 md:border-r border-gray-800">
+            <div className="w-full md:w-1/2 h-48 sm:h-64 md:h-auto overflow-hidden border-b md:border-b-0 md:border-r border-gray-800 shrink-0">
               <img src={selectedProject.image} className="w-full h-full object-cover" alt="Detail" />
             </div>
 
             {/* Info del Modal */}
-            <div className="w-full md:w-1/2 p-8 md:p-12 space-y-6">
+            <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-12 space-y-6">
               <div className="space-y-2">
                 <span className="text-orange-500 font-mono text-xs tracking-widest uppercase">{selectedProject.type}</span>
-                <h3 className="text-4xl font-bold text-white tracking-tighter">{selectedProject.name}</h3>
+                <h3 className="text-3xl sm:text-4xl font-bold text-white tracking-tighter">{selectedProject.name}</h3>
               </div>
 
-              <p className="text-gray-400 text-lg leading-relaxed font-mono">
+              <p className="text-gray-400 text-base sm:text-lg leading-relaxed font-mono">
                 {selectedProject.longDesc}
               </p>
 
@@ -191,17 +191,17 @@ export const Work = ({ t }: { t: any }) => {
                 ))}
               </div>
 
-              <div className="pt-4 flex gap-4">
+              <div className="pt-4 flex flex-col sm:flex-row gap-4">
                 <a
                   href={selectedProject.github}
                   target="_blank"
-                  className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-3 px-6 rounded-xl transition-all flex items-center gap-2 text-sm"
+                  className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 text-sm w-full sm:w-auto"
                 >
                   {t.work_modal_view} <ExternalLink size={18} />
                 </a>
                 <button
                   onClick={() => setSelectedProjectIndex(null)}
-                  className="border border-gray-700 text-gray-400 hover:text-white px-6 py-3 rounded-xl text-sm transition-colors"
+                  className="border border-gray-700 text-gray-400 hover:text-white px-6 py-3 rounded-xl text-sm transition-colors w-full sm:w-auto text-center"
                 >
                   {t.work_modal_close}
                 </button>

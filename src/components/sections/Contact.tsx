@@ -36,7 +36,7 @@ export const Contact = ({ t }: { t: any }) => {
           />
 
           {/* Texto: Mismas clases text-4xl lg:text-5xl y font-mono */}
-          <h2 className="text-4xl lg:text-5xl font-mono text-gray-200 font-bold flex items-center gap-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-mono text-gray-200 font-bold flex items-center gap-4">
             <span className="text-orange-500 font-bold">$</span>
             contact.exe
           </h2>
@@ -67,15 +67,15 @@ export const Contact = ({ t }: { t: any }) => {
             </div>
 
             {/* Editor de código */}
-            <div className="p-6 md:p-10 text-[15px] flex relative">
+            <div className="p-4 sm:p-6 md:p-10 text-xs sm:text-[15px] flex relative overflow-x-auto w-full">
               {/* Números de línea laterales */}
-              <div className="flex flex-col text-gray-700 text-right pr-6 select-none border-r border-white/5 mr-4 w-10">
+              <div className="flex flex-col text-gray-700 text-right pr-4 sm:pr-6 select-none border-r border-white/5 mr-2 sm:mr-4 w-6 sm:w-10 shrink-0">
                 {Array.from({ length: 14 }).map((_, i) => (
-                  <span key={i} className="h-[24px] leading-[24px]">{i + 1}</span>
+                  <span key={i} className="h-[20px] sm:h-[24px] leading-[20px] sm:leading-[24px]">{i + 1}</span>
                 ))}
               </div>
 
-              <div className="flex-1 space-y-0 text-[15px]">
+              <div className="flex-1 space-y-0 text-xs sm:text-[15px] min-w-max">
                 {/* Línea 1 */}
                 <div className="h-[24px] leading-[24px]"><span className="text-[#e7c787]">{'{'}</span></div>
 
@@ -127,17 +127,17 @@ export const Contact = ({ t }: { t: any }) => {
                 </div>
 
                 {/* Línea 10: Cierre JSON */}
-                <div className="h-[24px] leading-[24px]"><span className="text-[#e7c787]">{'}'}</span></div>
+                <div className="h-[20px] sm:h-[24px] leading-[20px] sm:leading-[24px]"><span className="text-[#e7c787]">{'}'}</span></div>
 
-                <div className="h-[24px]"></div>
+                <div className="h-[20px] sm:h-[24px]"></div>
 
                 {/* Línea 12: Comentario */}
-                <div className="text-gray-500 italic h-[24px] leading-[24px]">
+                <div className="text-gray-500 italic h-[20px] sm:h-[24px] leading-[20px] sm:leading-[24px]">
                   {t.contact_json_wait}
                 </div>
 
                 {/* Línea 13: Cursor */}
-                <div className="flex items-center h-[24px]">
+                <div className="flex items-center h-[20px] sm:h-[24px]">
                   <span className="inline-block w-2.5 h-0.5 bg-[#ef8b51] animate-pulse"></span>
                 </div>
               </div>
@@ -172,8 +172,8 @@ export const Contact = ({ t }: { t: any }) => {
               <div className="flex-1 h-full"></div>
             </div>
 
-            <form onSubmit={handleWhatsApp} className="p-6 md:p-10 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleWhatsApp} className="p-4 sm:p-6 md:p-10 space-y-6 sm:space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{t.contact_name}</label>
                   <input
@@ -210,8 +210,8 @@ export const Contact = ({ t }: { t: any }) => {
                 ></textarea>
               </div>
 
-              <button type="submit" className="min-w-[240px] px-8 py-3 rounded-xl bg-[#3d2317] border border-orange-900/30 text-[#ef8b51] font-mono text-sm font-bold uppercase tracking-[0.15em] hover:bg-[#4d2d1d] hover:text-white transition-all duration-300 flex items-center justify-center gap-3 group">
-                <Play size={14} className="fill-[#ef8b51] group-hover:fill-white transition-colors" />
+              <button type="submit" className="w-full sm:w-auto min-w-[240px] px-8 py-3 rounded-xl bg-[#3d2317] border border-orange-900/30 text-[#ef8b51] font-mono text-sm font-bold uppercase tracking-[0.15em] hover:bg-[#4d2d1d] hover:text-white transition-all duration-300 flex items-center justify-center gap-3 group">
+                <Play size={14} className="fill-[#ef8b51] group-hover:fill-white transition-colors shrink-0" />
                 {t.contact_send}
               </button>
             </form>

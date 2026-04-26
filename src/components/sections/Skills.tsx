@@ -25,13 +25,13 @@ export const Skills = ({ t }: { t: any }) => {
           </h2>
 
           {/* --- CONTENIDO CENTRADO: POSICIÓN ELEVADA Y ESCALA MÁXIMA --- */}
-          <div className="flex flex-col items-center justify-center w-full">
+          <div className="flex flex-col items-center justify-center w-full overflow-hidden">
 
             {/* Contenedor principal sin el resplandor naranja de fondo */}
-            <div className="relative flex items-center justify-center w-full min-h-[600px] md:min-h-[700px] -mt-10 md:-mt-20">
+            <div className="relative flex items-center justify-center w-full min-h-[400px] sm:min-h-[600px] md:min-h-[700px] -mt-5 sm:-mt-10 md:-mt-20">
 
               {/* CONTENEDOR DE LA ÓRBITA */}
-              <div className="w-full max-w-[800px] z-10 transform scale-110 md:scale-[1.40] transition-all duration-700 ease-out">
+              <div className="w-full max-w-[800px] z-10 transform scale-[0.8] sm:scale-110 md:scale-[1.40] transition-all duration-700 ease-out">
                 <OrbitingSkillsGlobe />
               </div>
 

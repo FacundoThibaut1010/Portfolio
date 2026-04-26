@@ -21,21 +21,21 @@ export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }
 
           {/* Titles */}
           <div className="space-y-2">
-            <h1 className="text-7xl sm:text-8xl lg:text-[90px] font-bold text-white leading-tight tracking-tight">
+            <h1 className="text-5xl sm:text-7xl lg:text-[90px] font-bold text-white leading-tight tracking-tight">
               {t.hero_hello}
             </h1>
-            <h1 className="text-[3.5rem] sm:text-8xl lg:text-[90px] font-bold leading-tight tracking-tight bg-gradient-to-r from-orange-400 via-pink-400 to-blue-500 text-transparent bg-clip-text pb-2">
+            <h1 className="text-5xl sm:text-7xl lg:text-[90px] font-bold leading-tight tracking-tight bg-gradient-to-r from-orange-400 via-pink-400 to-blue-500 text-transparent bg-clip-text pb-2">
               Facundo Thibaut
             </h1>
           </div>
 
           {/* Description */}
-          <div className="space-y-4 text-xl text-gray-400 max-w-2xl">
-            <p className="flex items-center gap-3">
-              <span className="text-orange-500 font-mono text-base">&lt;{t.hero_title} /&gt;</span>
+          <div className="space-y-4 text-base sm:text-xl text-gray-400 max-w-2xl">
+            <p className="flex items-center gap-2 sm:gap-3">
+              <span className="text-orange-500 font-mono text-sm sm:text-base">&lt;{t.hero_title} /&gt;</span>
               <span className="text-gray-200 font-medium">{t.hero_desc1}</span>
             </p>
-            <p className="text-[17px] text-gray-400 leading-relaxed font-mono">
+            <p className="text-sm sm:text-[17px] text-gray-400 leading-relaxed font-mono">
               {t.hero_desc2}
             </p>
           </div>
@@ -103,25 +103,25 @@ export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }
           <div className="w-full max-w-2xl bg-[#16161a] border border-gray-700/50 rounded-[2rem] shadow-2xl overflow-hidden relative flex flex-col">
 
             {/* HEADER */}
-            <div className="flex items-center justify-between px-6 py-4 bg-[#1e1e24] border-b border-gray-800 shrink-0">
-              <div className="flex gap-2.5">
-                <div className="w-3.5 h-3.5 rounded-full bg-[#ff5f56]"></div>
-                <div className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e]"></div>
-                <div className="w-3.5 h-3.5 rounded-full bg-[#27c93f]"></div>
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 bg-[#1e1e24] border-b border-gray-800 shrink-0">
+              <div className="flex gap-2 sm:gap-2.5">
+                <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-[#ff5f56]"></div>
+                <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-[#ffbd2e]"></div>
+                <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-[#27c93f]"></div>
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-400 font-mono cursor-default">
-                <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+              <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-400 font-mono cursor-default">
+                <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-orange-500"></span>
                 portfolio.tsx
               </div>
-              <div className="w-8 h-8 border border-gray-700 rounded flex items-center justify-center">
+              <div className="hidden sm:flex w-8 h-8 border border-gray-700 rounded items-center justify-center">
                 <span className="text-xs font-mono text-gray-400">&lt;/&gt;</span>
               </div>
             </div>
 
             {/* CUERPO DEL CÓDIGO */}
-            <div className="flex p-6 text-[15px] font-mono leading-[2rem] overflow-x-auto relative min-h-[420px]">
+            <div className="flex p-4 sm:p-6 text-xs sm:text-[15px] font-mono leading-[1.8rem] sm:leading-[2rem] overflow-x-auto relative min-h-[300px] sm:min-h-[420px] w-full">
               {/* Números de línea */}
-              <div className="flex flex-col text-gray-600 select-none pr-6 border-r border-gray-800 mr-6 text-right shrink-0">
+              <div className="flex flex-col text-gray-600 select-none pr-4 sm:pr-6 border-r border-gray-800 mr-4 sm:mr-6 text-right shrink-0">
                 {[...Array(12)].map((_, i) => (
                   <span key={i}>{i + 1}</span>
                 ))}
@@ -214,16 +214,16 @@ export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }
             </div>
 
             {/* FOOTER: Botones fijos abajo */}
-            <div className="flex items-center gap-5 p-6 border-t border-gray-800 bg-[#16161a] mt-auto shrink-0">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5 p-4 sm:p-6 border-t border-gray-800 bg-[#16161a] mt-auto shrink-0 w-full">
               <button
                 onClick={() => scrollTo('about')}
-                className="flex items-center gap-3 border border-orange-500/30 text-orange-500 hover:bg-orange-500/10 rounded-xl px-8 py-3.5 text-xs uppercase tracking-[0.2em] font-mono transition-colors"
+                className="flex justify-center items-center gap-3 border border-orange-500/30 text-orange-500 hover:bg-orange-500/10 rounded-xl px-4 sm:px-8 py-3 sm:py-3.5 text-xs uppercase tracking-[0.2em] font-mono transition-colors w-full sm:w-auto"
               >
                 <Play size={14} fill="currentColor" /> {t.btn_run_profile}
               </button>
               <button
                 onClick={() => scrollTo('work')}
-                className="flex items-center gap-3 border border-gray-700 text-gray-300 hover:bg-gray-800 rounded-xl px-8 py-3.5 text-xs uppercase tracking-[0.2em] font-mono transition-colors"
+                className="flex justify-center items-center gap-3 border border-gray-700 text-gray-300 hover:bg-gray-800 rounded-xl px-4 sm:px-8 py-3 sm:py-3.5 text-xs uppercase tracking-[0.2em] font-mono transition-colors w-full sm:w-auto"
               >
                 <Folder size={14} /> {t.btn_view_projects}
               </button>
