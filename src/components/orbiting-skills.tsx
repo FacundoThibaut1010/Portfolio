@@ -268,26 +268,29 @@ export function OrbitingSkillsGlobe() {
   }, []);
 
   // --- 2. RADIOS DINÁMICOS ---
-  // --- 2. RADIOS DINÁMICOS (Valores reducidos para que respire más) ---
-  // Antes: r1 era 100/80, r2 era 190/140.
-  const r1 = isMobile ? 70 : 85;   // Órbita interna
-  const r2 = isMobile ? 120 : 160;  // Órbita externa
+  // Definimos los radios una sola vez para que ambos (línea e ícono) los usen
+  const internalRadius = isMobile ? 100 : 100; // Antes tenías 85 en ícono pero 100 en línea
+  const externalRadius = isMobile ? 178 : 180; // Antes tenías 160 en ícono pero 180 en línea
 
-  // --- 3. LA LISTA (Ahora aquí adentro para que no dé error) ---
+  // --- 3. LA LISTA DE SKILLS ---
   const skillsConfig: SkillConfig[] = [
-    { id: 'html', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'html', phaseShift: 0, glowColor: 'cyan', label: 'HTML5' },
-    { id: 'css', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'css', phaseShift: (2 * Math.PI) / 6, glowColor: 'cyan', label: 'CSS3' },
-    { id: 'javascript', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'javascript', phaseShift: (4 * Math.PI) / 6, glowColor: 'cyan', label: 'JavaScript' },
-    { id: 'typescript', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'typescript', phaseShift: (6 * Math.PI) / 6, glowColor: 'cyan', label: 'TypeScript' },
-    { id: 'python', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'python', phaseShift: (8 * Math.PI) / 6, glowColor: 'cyan', label: 'Python' },
-    { id: 'github', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'github', phaseShift: (10 * Math.PI) / 6, glowColor: 'cyan', label: 'GitHub' },
-    { id: 'react', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'react', phaseShift: 0, glowColor: 'purple', label: 'React' },
-    { id: 'angular', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'angular', phaseShift: (2 * Math.PI) / 6, glowColor: 'purple', label: 'Angular' },
-    { id: 'node', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'node', phaseShift: (4 * Math.PI) / 6, glowColor: 'purple', label: 'Node.js' },
-    { id: 'java', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'java', phaseShift: (6 * Math.PI) / 6, glowColor: 'purple', label: 'Java' },
-    { id: 'mysql', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'mysql', phaseShift: (8 * Math.PI) / 6, glowColor: 'purple', label: 'MySQL' },
-    { id: 'tailwind', orbitRadius: r2, size: isMobile ? 35 : 40, speed: -0.15, iconType: 'tailwind', phaseShift: (10 * Math.PI) / 6, glowColor: 'purple', label: 'Tailwind' },
+    // Todos los de la órbita INTERNA usan 'internalRadius'
+    { id: 'html', orbitRadius: internalRadius, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'html', phaseShift: 0, glowColor: 'cyan', label: 'HTML5' },
+    { id: 'css', orbitRadius: internalRadius, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'css', phaseShift: (2 * Math.PI) / 6, glowColor: 'cyan', label: 'CSS3' },
+    { id: 'javascript', orbitRadius: internalRadius, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'javascript', phaseShift: (4 * Math.PI) / 6, glowColor: 'cyan', label: 'JavaScript' },
+    { id: 'typescript', orbitRadius: internalRadius, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'typescript', phaseShift: (6 * Math.PI) / 6, glowColor: 'cyan', label: 'TypeScript' },
+    { id: 'python', orbitRadius: internalRadius, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'python', phaseShift: (8 * Math.PI) / 6, glowColor: 'cyan', label: 'Python' },
+    { id: 'github', orbitRadius: internalRadius, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'github', phaseShift: (10 * Math.PI) / 6, glowColor: 'cyan', label: 'GitHub' },
+
+    // Todos los de la órbita EXTERNA usan 'externalRadius'
+    { id: 'react', orbitRadius: externalRadius, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'react', phaseShift: 0, glowColor: 'purple', label: 'React' },
+    { id: 'angular', orbitRadius: externalRadius, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'angular', phaseShift: (2 * Math.PI) / 6, glowColor: 'purple', label: 'Angular' },
+    { id: 'node', orbitRadius: externalRadius, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'node', phaseShift: (4 * Math.PI) / 6, glowColor: 'purple', label: 'Node.js' },
+    { id: 'java', orbitRadius: externalRadius, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'java', phaseShift: (6 * Math.PI) / 6, glowColor: 'purple', label: 'Java' },
+    { id: 'mysql', orbitRadius: externalRadius, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'mysql', phaseShift: (8 * Math.PI) / 6, glowColor: 'purple', label: 'MySQL' },
+    { id: 'tailwind', orbitRadius: externalRadius, size: isMobile ? 35 : 40, speed: -0.15, iconType: 'tailwind', phaseShift: (10 * Math.PI) / 6, glowColor: 'purple', label: 'Tailwind' },
   ];
+
 
   // 1. EL MOTOR (Animación automática)
   useEffect(() => {
