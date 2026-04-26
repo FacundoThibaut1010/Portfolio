@@ -16,18 +16,21 @@ const PortfolioUI = () => {
   const t = translations[lang] as any;
   const [activeSection, setActiveSection] = useState('hero');
 
-  // ScrollSpy
+  // ScrollSpy Optimizado para Móvil y PC
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
-      // Find the most prominent intersecting entry to avoid stuck states
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        // Bajamos la exigencia: con que un 20% de la sección sea visible, ya la activa
+        if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
           setActiveSection(entry.target.id);
         }
       });
     }, {
-      threshold: 0.1,
-      rootMargin: "-20% 0px -60% 0px"
+      // Umbrales múltiples para que el sensor sea más "fino"
+      threshold: [0.1, 0.2, 0.3],
+      // Bajamos el margen del fondo de -60% a -40% 
+      // para que detecte la sección de abajo mucho antes
+      rootMargin: "-15% 0px -40% 0px"
     });
 
     sections.forEach((sec) => {
