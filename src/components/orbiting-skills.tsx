@@ -154,25 +154,6 @@ const SkillIcon = memo(({ type }: SkillIconProps) => {
 });
 SkillIcon.displayName = 'SkillIcon';
 
-// --- Configuration for the Orbiting Skills ---
-const skillsConfig: SkillConfig[] = [
-  // --- ÓRBITA INTERNA (Radio 100) - 6 Iconos ---
-  { id: 'html', orbitRadius: 100, size: 35, speed: 0.3, iconType: 'html', phaseShift: 0, glowColor: 'cyan', label: 'HTML5' },
-  { id: 'css', orbitRadius: 100, size: 35, speed: 0.3, iconType: 'css', phaseShift: (2 * Math.PI) / 6, glowColor: 'cyan', label: 'CSS3' },
-  { id: 'javascript', orbitRadius: 100, size: 35, speed: 0.3, iconType: 'javascript', phaseShift: (4 * Math.PI) / 6, glowColor: 'cyan', label: 'JavaScript' },
-  { id: 'typescript', orbitRadius: 100, size: 35, speed: 0.3, iconType: 'typescript', phaseShift: (6 * Math.PI) / 6, glowColor: 'cyan', label: 'TypeScript' },
-  { id: 'python', orbitRadius: 100, size: 35, speed: 0.3, iconType: 'python', phaseShift: (8 * Math.PI) / 6, glowColor: 'cyan', label: 'Python' },
-  { id: 'github', orbitRadius: 100, size: 35, speed: 0.3, iconType: 'github', phaseShift: (10 * Math.PI) / 6, glowColor: 'cyan', label: 'GitHub' },
-
-  // --- ÓRBITA EXTERNA (Radio 180) - 6 Iconos ---
-  { id: 'react', orbitRadius: 180, size: 45, speed: -0.15, iconType: 'react', phaseShift: 0, glowColor: 'purple', label: 'React' },
-  { id: 'angular', orbitRadius: 180, size: 45, speed: -0.15, iconType: 'angular', phaseShift: (2 * Math.PI) / 6, glowColor: 'purple', label: 'Angular' },
-  { id: 'node', orbitRadius: 180, size: 45, speed: -0.15, iconType: 'node', phaseShift: (4 * Math.PI) / 6, glowColor: 'purple', label: 'Node.js' },
-  { id: 'java', orbitRadius: 180, size: 45, speed: -0.15, iconType: 'java', phaseShift: (6 * Math.PI) / 6, glowColor: 'purple', label: 'Java' },
-  { id: 'mysql', orbitRadius: 180, size: 45, speed: -0.15, iconType: 'mysql', phaseShift: (8 * Math.PI) / 6, glowColor: 'purple', label: 'MySQL' },
-  { id: 'tailwind', orbitRadius: 180, size: 40, speed: -0.15, iconType: 'tailwind', phaseShift: (10 * Math.PI) / 6, glowColor: 'purple', label: 'Tailwind' },
-];
-
 // --- Memoized Orbiting Skill Component ---
 const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -276,6 +257,38 @@ export function OrbitingSkillsGlobe() {
   const [dragRotation, setDragRotation] = useState(0);
   const lastMouseX = useRef(0);
 
+  // --- 1. DETECTOR DE MÓVIL ---
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // --- 2. RADIOS DINÁMICOS ---
+  // --- 2. RADIOS DINÁMICOS (Valores reducidos para que respire más) ---
+  // Antes: r1 era 100/80, r2 era 190/140.
+  const r1 = isMobile ? 70 : 85;   // Órbita interna
+  const r2 = isMobile ? 120 : 160;  // Órbita externa
+
+  // --- 3. LA LISTA (Ahora aquí adentro para que no dé error) ---
+  const skillsConfig: SkillConfig[] = [
+    { id: 'html', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'html', phaseShift: 0, glowColor: 'cyan', label: 'HTML5' },
+    { id: 'css', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'css', phaseShift: (2 * Math.PI) / 6, glowColor: 'cyan', label: 'CSS3' },
+    { id: 'javascript', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'javascript', phaseShift: (4 * Math.PI) / 6, glowColor: 'cyan', label: 'JavaScript' },
+    { id: 'typescript', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'typescript', phaseShift: (6 * Math.PI) / 6, glowColor: 'cyan', label: 'TypeScript' },
+    { id: 'python', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'python', phaseShift: (8 * Math.PI) / 6, glowColor: 'cyan', label: 'Python' },
+    { id: 'github', orbitRadius: r1, size: isMobile ? 30 : 35, speed: 0.3, iconType: 'github', phaseShift: (10 * Math.PI) / 6, glowColor: 'cyan', label: 'GitHub' },
+    { id: 'react', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'react', phaseShift: 0, glowColor: 'purple', label: 'React' },
+    { id: 'angular', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'angular', phaseShift: (2 * Math.PI) / 6, glowColor: 'purple', label: 'Angular' },
+    { id: 'node', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'node', phaseShift: (4 * Math.PI) / 6, glowColor: 'purple', label: 'Node.js' },
+    { id: 'java', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'java', phaseShift: (6 * Math.PI) / 6, glowColor: 'purple', label: 'Java' },
+    { id: 'mysql', orbitRadius: r2, size: isMobile ? 35 : 45, speed: -0.15, iconType: 'mysql', phaseShift: (8 * Math.PI) / 6, glowColor: 'purple', label: 'MySQL' },
+    { id: 'tailwind', orbitRadius: r2, size: isMobile ? 35 : 40, speed: -0.15, iconType: 'tailwind', phaseShift: (10 * Math.PI) / 6, glowColor: 'purple', label: 'Tailwind' },
+  ];
+
   // 1. EL MOTOR (Animación automática)
   useEffect(() => {
     if (isPaused) return;
@@ -327,58 +340,46 @@ export function OrbitingSkillsGlobe() {
   ];
 
   return (
-    <main className="w-full flex items-center justify-center overflow-hidden">
+    <main className="w-full flex items-center justify-center py-20">
       <div
-        className="relative w-[calc(100vw-40px)] h-[calc(100vw-40px)] md:w-[450px] md:h-[450px] flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
+        // Aumentamos el alto mínimo (min-h) para que el brillo respire
+        className="relative w-full aspect-square max-w-[650px] min-h-[550px] md:min-h-[600px] flex items-center justify-center cursor-grab active:cursor-grabbing select-none overflow-visible"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
+        {/* ... resto del código ... */}
 
-        {/* Central Icon usando tu imagen descargada */}
+        {/* ÍCONO CENTRAL */}
         <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center z-10 relative shadow-2xl">
-
-          {/* Estos son los brillos que ya tenías, los dejamos para que quede bien */}
           <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
           <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-
-          {/* Icono Central Original </> */}
-          <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center z-10 relative shadow-2xl">
-
-            {/* Brillos de fondo (Cian y Púrpura) */}
-            <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
-            <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-
-            <div className="relative z-10">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="36"
-                height="36"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="url(#centralGradient)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <defs>
-                  <linearGradient id="centralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#06B6D4" /> {/* Cian */}
-                    <stop offset="100%" stopColor="#d99329ff" /> {/* Naranja/Dorado */}
-                  </linearGradient>
-                </defs>
-                {/* Las flechitas del </> */}
-                <polyline points="16 18 22 12 16 6"></polyline>
-                <polyline points="8 6 2 12 8 18"></polyline>
-                {/* Si querés la barra del medio (opcional), descomentá la línea de abajo: */}
-                {/* <line x1="14" y1="4" x2="10" y2="20"></line> */}
-              </svg>
-            </div>
+          <div className="relative z-10">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="36"
+              height="36"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="url(#centralGradient)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <defs>
+                <linearGradient id="centralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#06B6D4" />
+                  <stop offset="100%" stopColor="#d99329ff" />
+                </linearGradient>
+              </defs>
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
           </div>
         </div>
 
-        {/* --- RESTO DE LAS ÓRBITAS E ICONOS --- */}
+        {/* ÓRBITAS */}
         {orbitConfigs.map((config) => (
           <GlowingOrbitPath
             key={`path-${config.radius}`}
@@ -388,6 +389,7 @@ export function OrbitingSkillsGlobe() {
           />
         ))}
 
+        {/* ICONOS GIRANDO */}
         {skillsConfig.map((config) => {
           const dragRad = dragRotation * (Math.PI / 180);
           const angle = (time * config.speed) + dragRad + (config.phaseShift || 0);

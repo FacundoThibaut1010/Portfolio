@@ -4,7 +4,7 @@ import { Typewriter } from '../ui/Typewriter';
 
 export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }) => {
   return (
-    <section id="hero" className="min-h-screen w-full flex flex-col items-center justify-center p-6 md:p-12 relative">
+    <section id="hero" className="min-h-screen w-full flex flex-col items-center justify-center p-6 pt-28 md:p-12 relative">
       <div className="max-w-[85rem] w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
 
         <motion.div

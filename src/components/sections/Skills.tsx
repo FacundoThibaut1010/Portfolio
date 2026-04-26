@@ -27,23 +27,27 @@ export const Skills = ({ t }: { t: any }) => {
           {/* --- CONTENIDO CENTRADO: POSICIÓN ELEVADA Y ESCALA MÁXIMA --- */}
           <div className="flex flex-col items-center justify-center w-full overflow-hidden">
 
-            {/* Contenedor principal sin el resplandor naranja de fondo */}
-            <div className="relative flex items-center justify-center w-full min-h-[400px] sm:min-h-[600px] md:min-h-[700px] -mt-5 sm:-mt-10 md:-mt-20">
+            {/* --- CONTENIDO CENTRADO --- */}
+            <div className="flex flex-col items-center justify-center w-full">
 
-              {/* CONTENEDOR DE LA ÓRBITA */}
-              <div className="w-full max-w-[800px] z-10 transform scale-[0.8] sm:scale-110 md:scale-[1.40] transition-all duration-700 ease-out">
-                <OrbitingSkillsGlobe />
+              {/* 1. Contenedor de la Órbita */}
+              <div className="relative flex items-center justify-center w-full min-h-[400px] sm:min-h-[600px] md:min-h-[700px] -mt-5 sm:-mt-10 md:-mt-20 overflow-visible">
+                <div className="w-full max-w-[800px] z-10 transform scale-[0.8] sm:scale-110 md:scale-[1.40] transition-all duration-700 ease-out">
+                  <OrbitingSkillsGlobe />
+                </div>
               </div>
 
-              {/* ETIQUETA: Interactive Tech Stack */}
-              <div className="absolute bottom-10 md:bottom-0 left-1/2 -translate-x-1/2 z-20">
+              {/* Ajuste fino: bajamos un toque el margen negativo para que no esté tan pegado */}
+              <div className="relative z-30 -mt-20 sm:-mt-16 md:-mt-24 lg:-mt-28">
                 <div className="flex items-center gap-3 px-6 py-2 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                  {/* ... contenido del badge ... */}
                   <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                   <span className="text-[10px] md:text-xs font-mono uppercase tracking-[0.3em] text-gray-300 font-bold">
                     {t.skills_interactive}
                   </span>
                 </div>
               </div>
+
             </div>
 
           </div>
