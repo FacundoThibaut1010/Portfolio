@@ -4,7 +4,10 @@ import { containerVariants, itemVariants } from '../../utils/animations';
 
 export const About = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }) => {
   return (
-    <section id="about" className="min-h-screen w-full flex flex-col justify-start pt-16 pb-16 md:pt-24 md:pb-24 px-6 relative z-10">
+    <section
+      id="about"
+      className="w-full min-h-[70vh] md:min-h-0 scroll-mt-20 md:scroll-mt-24 flex flex-col items-center relative"
+    >
       <div className="max-w-[85rem] mx-auto w-full">
         <motion.div
           initial="hidden"
