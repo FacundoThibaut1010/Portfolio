@@ -29,9 +29,9 @@ export const translations = {
     about_title: "About",
     about_dev_role: "WEB_DEVELOPER",
 
-    footer_role: "Software Engineer",
+    footer_role: "Web Developer",
     footer_built_1: "Built with ",
-    footer_built_2: " using Next.js, TypeScript & Tailwind",
+    footer_built_2: "",
     footer_copy: "© 2026 Facundo Thibaut. All rights reserved.",
 
     btn_run_profile: "Run Profile",
@@ -118,9 +118,9 @@ export const translations = {
     about_title: "Sobre mí",
     about_dev_role: "DESARROLLADOR_WEB",
 
-    footer_role: "Ingeniero de Software",
+    footer_role: "Desarrollador Web",
     footer_built_1: "Construido con ",
-    footer_built_2: " usando Next.js, TypeScript y Tailwind",
+    footer_built_2: "",
     footer_copy: "© 2026 Facundo Thibaut. Todos los derechos reservados.",
 
     btn_run_profile: "Ejecutar Perfil",
