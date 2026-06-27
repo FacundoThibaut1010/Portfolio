@@ -20,6 +20,7 @@ const SKILLS: Skill[] = [
   { name: 'React',       color: '#61DAFB', img: '/projets/react-logo-png_seeklogo-507247-Photoroom.png' },
   { name: 'TypeScript',  color: '#3178C6', img: '/projets/png-transparent-angularjs-typescript-javascript-vue-js-others-blue-angle-text-thumbnail-Photoroom.png', imgStyle: { transform: 'scale(1.2)' } },
   { name: 'Tailwind',    color: '#06B6D4', img: '' },
+  { name: 'Supabase',    color: '#3ECF8E', img: '/projets/superbase.png' },
   { name: 'JavaScript',  color: '#F7DF1E', img: '/projets/kisspng-javascript-clip-art-openclipart-logo-number-1713949408965-Photoroom.png' },
   // índice 9-12 — polo sur (menos movimiento)
   { name: 'Spring Boot', color: '#6DB33F', img: '/projets/spring-Photoroom.png' },
