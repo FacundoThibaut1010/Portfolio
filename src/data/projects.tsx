@@ -19,6 +19,15 @@ export const TechLogos = {
 
 export const getProjects = (t: any) => [
   {
+    name: 'AI Code Reviewer',
+    type: t.proj_type_web,
+    github: 'https://ai-code-reviewer-ten-mu.vercel.app/',
+    desc: t.ai_code_reviewer_desc,
+    longDesc: t.ai_code_reviewer_long_desc,
+    image: '/projets/aiCodeReviewer.png',
+    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Claude API']
+  },
+  {
     name: 'Black Jack',
     type: t.proj_type_web,
     github: 'https://github.com/Miagomez1/blackjack-unlam',

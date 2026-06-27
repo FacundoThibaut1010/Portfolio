@@ -70,6 +70,9 @@ export const translations = {
     invitacion_desc: "A digital wedding invitation that replaces the traditional physical card, designed to share in a single link.",
     invitacion_long_desc: "A digital wedding invitation that replaces the traditional physical card. Real-time countdown to the big day, photo gallery, venue information with direct Google Maps access, and RSVP feature so the couple knows who's coming. Designed to share in a single link — elegant, fully personalized, and always up to date.",
 
+    ai_code_reviewer_desc: "Fullstack web tool that automatically analyzes GitHub Pull Requests using AI (Claude API) in real-time streaming.",
+    ai_code_reviewer_long_desc: "Fullstack web tool that connects with GitHub via OAuth and automatically analyzes Pull Requests using Artificial Intelligence. The user selects a PR, the app obtains the complete code diff and processes it with the Claude API in streaming, showing the review in real-time word by word. The analysis detects bugs, suggests improvements, identifies security issues, and assigns a general score from 1 to 10. Reviews are saved in Supabase with RLS security, allowing the user to consult their history, compare PRs, track score evolution over time, and chat with the AI about the analyzed code.",
+
     contact_title: "Contact",
     contact_json_status_key: "\"status\"",
     contact_json_status_val: "\"open_to_work\"",
@@ -158,6 +161,9 @@ export const translations = {
 
     invitacion_desc: "Una invitación de boda digital que reemplaza la tarjeta física tradicional, diseñada para compartir en un solo link.",
     invitacion_long_desc: "Una invitación de boda digital que reemplaza la tarjeta física tradicional. Cuenta regresiva en tiempo real hasta el gran día, galería de fotos, información del venue con acceso directo en Google Maps, y confirmación de asistencia para que los novios sepan quiénes van. Diseñada para compartir en un solo link — elegante, completamente personalizada y siempre al día.",
+
+    ai_code_reviewer_desc: "Herramienta web fullstack que analiza automáticamente Pull Requests de GitHub usando IA (Claude API) en streaming y en tiempo real.",
+    ai_code_reviewer_long_desc: "Herramienta web fullstack que conecta con GitHub via OAuth y analiza automáticamente los Pull Requests usando Inteligencia Artificial. El usuario selecciona un PR, la app obtiene el diff completo del código y lo procesa con Claude API en streaming, mostrando el review en tiempo real palabra por palabra. El análisis detecta bugs, sugiere mejoras, identifica problemas de seguridad y asigna un score general del 1 al 10. Los reviews se guardan en Supabase con seguridad RLS y el usuario puede consultar su historial, comparar PRs entre sí, ver la evolución de su score a lo largo del tiempo y chatear con la IA sobre el código analizado.",
 
     contact_title: "Contacto",
     contact_json_status_key: "\"estado\"",
