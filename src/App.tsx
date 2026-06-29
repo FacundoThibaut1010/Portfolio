@@ -74,7 +74,7 @@ const PortfolioUI = () => {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [isProjectOpen]);
 
 
 

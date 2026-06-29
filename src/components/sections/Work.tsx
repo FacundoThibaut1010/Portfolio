@@ -30,7 +30,7 @@ const TECH_ICONS: Record<string, string> = {
   'Next.js':       '/projets/next.js.png',
   'Tailwind CSS':  '/projets/tailwin css.png',
   'Supabase':      '/projets/superbase.png',
-  'Claude API':    '/projets/claude.png',
+  'Grok AI':       '/projets/Grok ai.png',
 };
 
 export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProjectOpen: (val: boolean) => void, lang: 'en' | 'es', setLang: (l: 'en' | 'es') => void }) => {

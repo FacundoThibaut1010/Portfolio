@@ -25,7 +25,7 @@ export const getProjects = (t: any) => [
     desc: t.ai_code_reviewer_desc,
     longDesc: t.ai_code_reviewer_long_desc,
     image: '/projets/aiCodeReviewer.png',
-    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Claude API']
+    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Grok AI']
   },
   {
     name: 'Black Jack',
