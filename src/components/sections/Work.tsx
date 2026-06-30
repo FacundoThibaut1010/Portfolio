@@ -10,38 +10,38 @@ const TECH_ICON_SCALE: Record<string, string> = {
 };
 
 const TECH_ICONS: Record<string, string> = {
-  'Java':       '/projets/java-logo-Photoroom.png',
-  'HTML':       '/projets/html5_23403-Photoroom.png',
-  'CSS':        '/projets/css-icon5555.logowik.com-Photoroom.png',
+  'Java': '/projets/java-logo-Photoroom.png',
+  'HTML': '/projets/html5_23403-Photoroom.png',
+  'CSS': '/projets/css-icon5555.logowik.com-Photoroom.png',
   'Javascript': '/projets/kisspng-javascript-clip-art-openclipart-logo-number-1713949408965-Photoroom.png',
   'JavaScript': '/projets/kisspng-javascript-clip-art-openclipart-logo-number-1713949408965-Photoroom.png',
   'Spring mvc': '/projets/spring-Photoroom.png',
-  'MySql':      '/projets/mysql-6-logo-png-transparent-Photoroom.png',
-  'React':      '/projets/react-logo-png_seeklogo-507247-Photoroom.png',
-  'React.js':   '/projets/react-logo-png_seeklogo-507247-Photoroom.png',
+  'MySql': '/projets/mysql-6-logo-png-transparent-Photoroom.png',
+  'React': '/projets/react-logo-png_seeklogo-507247-Photoroom.png',
+  'React.js': '/projets/react-logo-png_seeklogo-507247-Photoroom.png',
   'TypeScript': '/projets/png-transparent-angularjs-typescript-javascript-vue-js-others-blue-angle-text-thumbnail-Photoroom.png',
-  'Node.js':    '/projets/87-879058_formation-node-js-node-js-logo-vector-Photoroom.png',
-  'Angular':    '/projets/java-logo-angular-angularjs-software-testing-template-computer-icons-computer-font-ppt-png-clipart-thumbnail-Photoroom.png',
-  'Python':     '/projets/hd-python-logo-symbol-transparent-png-735811696257415dbkifcuokn-Photoroom.png',
-  'MySQL':      '/projets/mysql-6-logo-png-transparent-Photoroom.png',
-  'SQLite':        '/projets/sqlite.png',
+  'Node.js': '/projets/87-879058_formation-node-js-node-js-logo-vector-Photoroom.png',
+  'Angular': '/projets/java-logo-angular-angularjs-software-testing-template-computer-icons-computer-font-ppt-png-clipart-thumbnail-Photoroom.png',
+  'Python': '/projets/hd-python-logo-symbol-transparent-png-735811696257415dbkifcuokn-Photoroom.png',
+  'MySQL': '/projets/mysql-6-logo-png-transparent-Photoroom.png',
+  'SQLite': '/projets/sqlite.png',
   'Framer Motion': '/projets/frameMotion.png',
-  'Vite':          '/projets/vite.png',
-  'Next.js':       '/projets/next.js.png',
-  'Tailwind CSS':  '/projets/tailwin css.png',
-  'Supabase':      '/projets/superbase.png',
-  'Grok AI':       '/projets/Grok ai.png',
+  'Vite': '/projets/vite.png',
+  'Next.js': '/projets/next.js.png',
+  'Tailwind CSS': '/projets/tailwin css.png',
+  'Supabase': '/projets/superbase.png',
+  'Gemini API': '/projets/gimini api.png',
 };
 
 export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProjectOpen: (val: boolean) => void, lang: 'en' | 'es', setLang: (l: 'en' | 'es') => void }) => {
-  const [hoveredIndex, setHoveredIndex]               = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null);
-  const [isMobile, setIsMobile]       = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [windowWidth, setWindowWidth] = useState(375);
-  const detailRef        = useRef<HTMLDivElement>(null);
-  const touchTimer       = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const longPressed      = useRef(false);
-  const touchHandled     = useRef(false);
+  const detailRef = useRef<HTMLDivElement>(null);
+  const touchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressed = useRef(false);
+  const touchHandled = useRef(false);
 
   useEffect(() => {
     const check = () => {
@@ -60,16 +60,16 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
   });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
-  const projects        = getProjects(t);
+  const projects = getProjects(t);
 
   // Responsive thumbnail sizes — dynamic for any number of projects
-  const thumbPad    = 48;               // px-6 * 2
-  const thumbGap    = 16;               // gap-4
+  const thumbPad = 48;               // px-6 * 2
+  const thumbGap = 16;               // gap-4
   const numProjects = projects.length;
-  const totalGaps   = thumbGap * (numProjects - 1);
-  const thumbsArea  = windowWidth - thumbPad - totalGaps;
-  const mThumbExp   = Math.max(140, Math.floor(thumbsArea * 0.60));
-  const mThumbNorm  = Math.max(36,  Math.floor((thumbsArea - mThumbExp) / (numProjects - 1)));
+  const totalGaps = thumbGap * (numProjects - 1);
+  const thumbsArea = windowWidth - thumbPad - totalGaps;
+  const mThumbExp = Math.max(140, Math.floor(thumbsArea * 0.60));
+  const mThumbNorm = Math.max(36, Math.floor((thumbsArea - mThumbExp) / (numProjects - 1)));
   const selectedProject = selectedProjectIndex !== null ? projects[selectedProjectIndex] : null;
 
   useEffect(() => { setIsProjectOpen(false); }, []);
@@ -124,7 +124,7 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
                           WebkitTouchCallout: 'none' as any,
                         }}
                         animate={{
-                          width:  isHov ? (isMobile ? mThumbExp  : 380) : (isMobile ? mThumbNorm : 145),
+                          width: isHov ? (isMobile ? mThumbExp : 380) : (isMobile ? mThumbNorm : 145),
                           height: isHov ? (isMobile ? Math.floor(mThumbExp * 0.75) : 280) : (isMobile ? mThumbNorm : 145),
                         }}
                         transition={{ type: 'spring', stiffness: 280, damping: 28 }}
