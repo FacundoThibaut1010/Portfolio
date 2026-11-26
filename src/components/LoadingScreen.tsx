@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { EffectsToggles } from './ui/EffectsToggles';
 
 const TEXT = {
   en: { subtitle: 'Web Development', btn: 'Start Project' },
@@ -69,8 +70,10 @@ export const LoadingScreen = ({ onComplete }: { onComplete: (lang: 'en' | 'es') 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="absolute top-6 right-6 z-10 flex items-center bg-gray-900 border border-gray-800 rounded-full p-1"
+            className="absolute top-6 right-6 z-10 flex items-center gap-2"
           >
+            <EffectsToggles />
+            <div className="flex items-center bg-gray-900 border border-gray-800 rounded-full p-1">
             <button
               onClick={() => setLang('en')}
               className={`px-4 py-1.5 rounded-full text-xs font-mono transition-colors ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}
@@ -83,6 +86,7 @@ export const LoadingScreen = ({ onComplete }: { onComplete: (lang: 'en' | 'es') 
             >
               ES
             </button>
+            </div>
           </motion.div>
 
           {/* Name + subtitle */}

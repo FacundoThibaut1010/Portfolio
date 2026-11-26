@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Cpu } from 'lucide-react';
-import { SkillSphere, SkillCategory, SKILL_COUNTS, SKILL_TOTAL } from '../SkillSphere';
+import { SkillSphere, SkillCategory, SKILL_COUNTS, SKILL_TOTAL, CORE_SKILLS } from '../SkillSphere';
 import { containerVariants, itemVariants } from '../../utils/animations';
 import { StableText } from '../../data/lang';
 
@@ -95,7 +95,7 @@ export const Skills = ({ t }: { t: any }) => {
             ref={stageRef}
             className="lg:col-span-8 order-2 w-full mx-auto aspect-square max-w-[640px] max-h-[clamp(300px,calc(100svh-15rem),640px)] lg:max-h-[min(calc(100svh-3rem),640px)] flex justify-center items-center overflow-hidden"
           >
-            <SkillSphere activeCat={activeCat} size={size} />
+            <SkillSphere activeCat={activeCat} size={size} compact={size < 460} />
           </motion.div>
 
           {/* Filters — chips under the sphere on mobile/tablet */}
@@ -113,7 +113,7 @@ export const Skills = ({ t }: { t: any }) => {
                     }`}
                   >
                     {label(c)}
-                    <span className={`tabular-nums text-[10px] ${active ? 'text-orange-400/70' : 'text-gray-600'}`}>{count(c)}</span>
+                    <span className={`tabular-nums text-[10px] ${active ? 'text-orange-400/70' : 'text-gray-600'}`}>{c === null && size < 460 ? CORE_SKILLS.length : count(c)}</span>
                   </button>
                 );
               })}

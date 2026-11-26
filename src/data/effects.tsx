@@ -29,7 +29,12 @@ export const EffectsProvider = ({ children }: { children: ReactNode }) => {
   const [sound, setSoundState] = useState(() => read('fx-sound', true));
 
   const setPulses = (v: boolean) => { setPulsesState(v); write('fx-pulses', v); };
-  const setSound = (v: boolean) => { setSoundState(v); write('fx-sound', v); };
+  const setSound = (v: boolean) => {
+    setSoundState(v);
+    write('fx-sound', v);
+    setSoundEnabled(v);
+    if (v) playClick(); // confirmation only when turning sound ON
+  };
 
   useEffect(() => { setSoundEnabled(sound); }, [sound]);
 
@@ -37,6 +42,7 @@ export const EffectsProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const onDown = (e: PointerEvent) => {
       const el = e.target as HTMLElement | null;
+      if (el?.closest('[data-no-sfx]')) return; // the sound switch handles its own feedback
       if (el?.closest('button, a, [role="button"], input[type="submit"], [data-sfx]')) playClick();
     };
     const onKey = (e: KeyboardEvent) => {

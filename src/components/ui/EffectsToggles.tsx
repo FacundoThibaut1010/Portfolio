@@ -31,6 +31,7 @@ export const EffectsToggles = ({ size = 'sm' }: { size?: 'sm' | 'lg' }) => {
       </button>
       <button
         type="button"
+        data-no-sfx
         onClick={() => setSound(!sound)}
         aria-pressed={sound}
         aria-label={sound ? t.soundOn : t.soundOff}

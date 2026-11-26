@@ -56,8 +56,98 @@ const ProjectVisual = ({ project, className = '' }: { project: Project; classNam
     <img src={project.image} alt={project.name} decoding="async" draggable={false} className={`w-full h-full object-cover pointer-events-none ${className}`} />
   );
 
+/**
+ * Phones: big swipeable cards. The centered card is selected automatically while swiping;
+ * tap a card to select it (shows its details below), tap the selected one again to open it.
+ */
+const MobileCarousel = ({
+  projects,
+  selected,
+  onSelect,
+  onOpen,
+  tapLabel,
+}: {
+  projects: Project[];
+  selected: number;
+  onSelect: (i: number) => void;
+  onOpen: (i: number) => void;
+  tapLabel: string;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const onSelectRef = useRef(onSelect);
+  onSelectRef.current = onSelect;
+
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && e.intersectionRatio >= 0.6) onSelectRef.current(Number((e.target as HTMLElement).dataset.idx));
+        });
+      },
+      { root, threshold: [0.6] },
+    );
+    root.querySelectorAll('[data-idx]').forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [projects.length]);
+
+  return (
+    <div className="w-[calc(100%+2.5rem)] sm:w-[calc(100%+4rem)] -mx-5 sm:-mx-8">
+      <div
+        ref={ref}
+        className="flex gap-3 overflow-x-auto snap-x snap-mandatory px-[11vw] py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {projects.map((p, i) => {
+          const active = i === selected;
+          return (
+            <button
+              key={i}
+              data-idx={i}
+              type="button"
+              aria-label={p.name}
+              onClick={(e) => {
+                if (active) onOpen(i);
+                else {
+                  onSelect(i);
+                  e.currentTarget.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
+              }}
+              className={`relative snap-center shrink-0 w-[78vw] max-w-[380px] aspect-[4/3] rounded-2xl overflow-hidden transition-[transform,opacity,box-shadow] duration-300 ease-out ${
+                active
+                  ? 'scale-100 opacity-100 shadow-[0_0_0_2px_rgba(249,115,22,0.75),0_20px_50px_-15px_rgba(249,115,22,0.4)]'
+                  : 'scale-[0.92] opacity-55 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]'
+              }`}
+            >
+              <ProjectVisual project={p} />
+              <span className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+              <span className="absolute left-3 bottom-3 font-mono text-[11px] font-bold text-orange-400 tracking-widest bg-black/70 border border-orange-500/30 rounded-md px-2 py-1">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span
+                className={`absolute right-3 bottom-3 flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-black bg-orange-500 rounded-full pl-3 pr-2 py-1 transition-[opacity,transform] duration-300 ${
+                  active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                }`}
+              >
+                {tapLabel} <ArrowUpRight size={14} />
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {/* Position dots */}
+      <div className="flex justify-center gap-1.5 mt-1">
+        {projects.map((_, i) => (
+          <span key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === selected ? 'w-5 bg-orange-500' : 'w-1.5 bg-gray-700'}`} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProjectOpen: (val: boolean) => void, lang: 'en' | 'es', setLang: (l: 'en' | 'es') => void }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [mobileSel, setMobileSel] = useState(0);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [windowWidth, setWindowWidth] = useState(375);
@@ -105,6 +195,7 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
   const mThumbExp = Math.max(140, Math.floor(thumbsArea * 0.60));
   const mThumbNorm = Math.max(36, Math.floor((thumbsArea - mThumbExp) / (numProjects - 1)));
   const selectedProject = selectedProjectIndex !== null ? projects[selectedProjectIndex] : null;
+  const activeIdx: number | null = isMobile ? mobileSel : hoveredIndex;
 
   useEffect(() => { setIsProjectOpen(false); }, []);
 
@@ -147,6 +238,16 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
                 transition={{ duration: 0.3 }}
                 className="flex flex-col items-center gap-0"
               >
+                {isMobile ? (
+                  <MobileCarousel
+                    projects={projects}
+                    selected={mobileSel}
+                    onSelect={setMobileSel}
+                    onOpen={handleSelect}
+                    tapLabel={t.work_tap_open}
+                  />
+                ) : (
+                <>
                 {/* Row keeps the expanded height reserved, so hovering never pushes the page */}
                 <div
                   className="flex items-center justify-center gap-3 sm:gap-4 z-10 relative w-full"
@@ -227,6 +328,8 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
                     );
                   })}
                 </div>
+                </>
+                )}
 
                 {/* Giant label — single line, auto-fits long names, fixed height */}
                 <div
@@ -236,18 +339,18 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
                 >
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.p
-                      key={hoveredIndex ?? 'default'}
+                      key={activeIdx ?? 'default'}
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -30 }}
                       transition={{ duration: 0.18 }}
                       className="absolute inset-0 flex items-center justify-center font-mono font-black tracking-tighter leading-none whitespace-nowrap select-none"
                       style={{
-                        fontSize: fitName(hoveredIndex !== null ? projects[hoveredIndex].name : t.work_big_label),
-                        color: hoveredIndex !== null ? '#f97316' : (isMobile ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)'),
+                        fontSize: fitName(activeIdx !== null ? projects[activeIdx].name : t.work_big_label),
+                        color: activeIdx !== null ? '#f97316' : (isMobile ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)'),
                       }}
                     >
-                      {hoveredIndex !== null ? projects[hoveredIndex].name.toUpperCase() : t.work_big_label}
+                      {activeIdx !== null ? projects[activeIdx].name.toUpperCase() : t.work_big_label}
                     </motion.p>
                   </AnimatePresence>
                 </div>
@@ -255,9 +358,9 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
                 {/* Info strip — fixed height: shows the hovered project's details or a hint */}
                 <div data-grid-shield className="w-full max-w-3xl h-[6.5rem] sm:h-[5.5rem] mt-3 relative">
                   <AnimatePresence mode="wait" initial={false}>
-                    {hoveredIndex !== null ? (
+                    {activeIdx !== null ? (
                       <motion.div
-                        key={`info-${hoveredIndex}`}
+                        key={`info-${activeIdx}`}
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
@@ -266,17 +369,17 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
                       >
                         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em]">
                           <span className="text-orange-500 font-bold">
-                            {String(hoveredIndex + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
+                            {String(activeIdx + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
                           </span>
                           <span className="w-1 h-1 rounded-full bg-gray-700" />
-                          {projects[hoveredIndex].tech.slice(0, 4).map((tech: string) => (
+                          {projects[activeIdx].tech.slice(0, 4).map((tech: string) => (
                             <span key={tech} className="text-gray-400 border border-gray-800 bg-gray-900/60 rounded-full px-2.5 py-0.5 tracking-[0.12em]">
                               {tech}
                             </span>
                           ))}
                         </div>
                         <p className="text-gray-400 text-xs sm:text-sm font-mono leading-relaxed line-clamp-2 max-w-2xl">
-                          {projects[hoveredIndex].desc}
+                          {projects[activeIdx].desc}
                         </p>
                       </motion.div>
                     ) : (

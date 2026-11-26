@@ -210,7 +210,8 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
 
           </button>
 
-          <div className="flex flex-col items-center space-y-8">
+          {/* Left-aligned column, centered as a block: numbers and labels line up */}
+          <div className="flex flex-col items-start space-y-7">
 
             {sections.map((sec, idx) => (
 
@@ -218,13 +219,17 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
 
                 key={sec}
 
-                onClick={() => { scrollTo(sec); setIsMobileOpen(false); }}
+                onClick={() => {
+                  // Close first (this unlocks page scrolling), then glide to the section
+                  setIsMobileOpen(false);
+                  requestAnimationFrame(() => requestAnimationFrame(() => scrollTo(sec)));
+                }}
 
-                className={`text-3xl font-mono tracking-widest uppercase ${activeSection === sec ? 'text-orange-500 font-black' : 'text-gray-500'}`}
+                className={`flex items-baseline text-left text-[1.7rem] min-[400px]:text-3xl font-mono tracking-widest uppercase transition-colors ${activeSection === sec ? 'text-orange-500 font-black' : 'text-gray-500 active:text-gray-300'}`}
 
               >
 
-                <span className="text-orange-500/30 mr-4">0{idx + 1}</span>
+                <span className="w-12 shrink-0 text-orange-500/30">0{idx + 1}</span>
 
                 {t[`nav_${sec}`]}
 

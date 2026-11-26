@@ -12,8 +12,14 @@
     }
   }
 
+  html,
+  body {
+    background-color: #111115;
+  }
+
   html {
     scroll-behavior: smooth;
+    overscroll-behavior-y: none;
   }
 
   body {

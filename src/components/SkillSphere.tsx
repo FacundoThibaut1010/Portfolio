@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   siSpringboot, siAngular, siPython, siNodedotjs, siReact, siTypescript, siTailwindcss,
   siSupabase, siJavascript, siHtml5, siCss3, siGithub, siMysql, siPostgresql, siMongodb,
@@ -59,17 +59,20 @@ export const SKILL_TOTAL = SKILLS.length;
 
 // Radius as a fraction of the stage; the stage size comes from the parent (real pixels, no CSS scaling = crisp)
 const RADIUS_RATIO = 0.385;
-const N = SKILLS.length;
 const AUTO_SPEED = 0.32; // rad/s
 
-// Fibonacci sphere — even distribution
-const POSITIONS = Array.from({ length: N }, (_, i) => {
-  const golden = Math.PI * (3 - Math.sqrt(5));
-  const y = 1 - (i / (N - 1)) * 2;
-  const r = Math.sqrt(Math.max(0, 1 - y * y));
-  const theta = golden * i;
-  return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
-});
+// On phones the full list feels crowded: show these core skills, or only the chosen category
+export const CORE_SKILLS = ['React', 'TypeScript', 'JavaScript', 'Next.js', 'Node.js', 'Java', 'Spring Boot', 'Python', 'PostgreSQL', 'MySQL', 'MongoDB', 'Docker', 'Git', 'Tailwind'];
+
+// Fibonacci sphere — even distribution for n points
+const fibonacci = (n: number) =>
+  Array.from({ length: n }, (_, i) => {
+    const golden = Math.PI * (3 - Math.sqrt(5));
+    const y = n === 1 ? 0 : 1 - (i / (n - 1)) * 2;
+    const r = Math.sqrt(Math.max(0, 1 - y * y));
+    const theta = golden * i;
+    return { x: Math.cos(theta) * r, y: y * 0.92, z: Math.sin(theta) * r };
+  });
 
 type V3 = { x: number; y: number; z: number };
 
@@ -99,8 +102,19 @@ const EQUATOR = 2;
 
 // ── Component ────────────────────────────────────────────────────
 
-export function SkillSphere({ activeCat = null, size }: { activeCat?: SkillCategory | null; size: number }) {
+export function SkillSphere({ activeCat = null, size, compact = false }: { activeCat?: SkillCategory | null; size: number; compact?: boolean }) {
   const [hovered, setHovered] = useState<string | null>(null);
+
+  // Which tags are on the sphere: everything on desktop (others dimmed by the filter);
+  // on phones a lighter set — the core list, or only the selected category
+  const visible = useMemo(() => {
+    if (!compact) return SKILLS;
+    if (activeCat) return SKILLS.filter((s) => s.cat === activeCat);
+    return CORE_SKILLS.map((n) => SKILLS.find((s) => s.name === n)!).filter(Boolean);
+  }, [compact, activeCat]);
+  const positions = useMemo(() => fibonacci(visible.length), [visible]);
+  const visibleRef = useRef({ list: visible, pos: positions });
+  visibleRef.current = { list: visible, pos: positions };
 
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -133,13 +147,14 @@ export function SkillSphere({ activeCat = null, size }: { activeCat?: SkillCateg
       const C = sizeRef.current / 2;
       const cat = catRef.current;
       const hov = hoveredRef.current;
-      for (let i = 0; i < N; i++) {
+      const { list, pos } = visibleRef.current;
+      for (let i = 0; i < list.length; i++) {
         const node = itemRefs.current[i];
         if (!node) continue;
-        const pr = project(POSITIONS[i], rx, ry);
+        const pr = project(pos[i], rx, ry);
         const sx = pr.sx * R, sy = pr.sy * R, depth = pr.depth;
         const t = (depth + 1) / 2; // 0 back · 1 front
-        const skill = SKILLS[i];
+        const skill = list[i];
         const isHov = hov === skill.name;
         const dimmed = cat !== null && skill.cat !== cat;
         const scale = isHov ? 1 : 0.8 + t * 0.17;
@@ -262,7 +277,7 @@ export function SkillSphere({ activeCat = null, size }: { activeCat?: SkillCateg
     <div
       ref={containerRef}
       className="relative select-none cursor-grab active:cursor-grabbing"
-      style={{ width: size, height: size, touchAction: 'pan-y' }}
+      style={{ width: size, height: size, touchAction: 'none' }}
     >
       {/* Ambient glow */}
       <div
@@ -286,7 +301,7 @@ export function SkillSphere({ activeCat = null, size }: { activeCat?: SkillCateg
 
       {/* Tags — position/scale/opacity are written by the animation loop */}
       <ul className="absolute inset-0" aria-label="Skills">
-        {SKILLS.map((skill, i) => {
+        {visible.map((skill, i) => {
           const isHov = hovered === skill.name;
           return (
             <li key={skill.name} className="contents">
