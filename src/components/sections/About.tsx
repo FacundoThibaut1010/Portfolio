@@ -58,12 +58,20 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
         stagger: 0.08,
         scrollTrigger: { trigger: '.about-statement', start: 'top 82%', end: 'bottom 45%', scrub: 0.5 },
       });
-      // Blocks: rise in, in order, when they enter the screen
-      gsap.set('.about-fade', { opacity: 0, y: 32 });
-      ScrollTrigger.batch('.about-fade', {
-        start: 'top 90%',
-        once: true,
-        onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.12, overwrite: true }),
+      // Blocks slide in from the side as you scroll (scrubbed: they follow the scroll, both ways)
+      const dist = window.innerWidth < 768 ? 70 : 160;
+      gsap.utils.toArray<HTMLElement>('.about-slide').forEach((el) => {
+        const dir = el.dataset.from === 'right' ? 1 : -1;
+        gsap.fromTo(
+          el,
+          { x: dir * dist, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: el, start: 'top 95%', end: 'top 65%', scrub: 0.6 },
+          },
+        );
       });
       // Stats count up when they appear
       gsap.utils.toArray<HTMLElement>('.about-count').forEach((el) => {
@@ -107,13 +115,12 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
   ];
 
   return (
-    <section id="about" className="w-full relative py-20 lg:py-28 px-5 sm:px-8 lg:px-10">
+    <section id="about" className="w-full relative py-20 lg:py-28 px-5 sm:px-8 lg:px-10 overflow-x-clip">
       <div ref={rootRef} className="max-w-[85rem] mx-auto w-full">
-        {/* Eyebrow */}
-        <h2 className="about-fade font-mono text-sm sm:text-base text-gray-400 flex items-center gap-3 mb-8 lg:mb-12">
+        {/* Section title — same style as the other sections */}
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-mono text-gray-200 font-bold flex items-center gap-3 sm:gap-4 mb-8 lg:mb-12">
           <span className="text-orange-500 font-bold">&gt;_</span>
-          <span className="uppercase tracking-[0.3em]">{t.about_title}</span>
-          <span className="h-px flex-1 max-w-[160px] bg-gradient-to-r from-gray-700 to-transparent" />
+          {t.about_title}
         </h2>
 
         {/* Statement */}
@@ -123,7 +130,7 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
 
         <div className="mt-14 lg:mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           {/* Identity */}
-          <div data-grid-shield className="about-fade lg:col-span-4">
+          <div data-grid-shield data-from="left" className="about-slide lg:col-span-4">
             <div className="flex items-center gap-5 lg:flex-col lg:items-start">
               <div className="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 lg:w-40 lg:h-40">
                 <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-orange-500/60 via-transparent to-blue-500/40" />
@@ -153,13 +160,13 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
 
           {/* Story */}
           <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12 content-start">
-            <div data-grid-shield className="about-fade space-y-4">
+            <div data-grid-shield data-from="right" className="about-slide space-y-4">
               <Label n="01">{t.about_label_who}</Label>
               <p className="text-gray-300 text-[15px] sm:text-base leading-relaxed">
                 <StableText k="about_whoami_desc" />
               </p>
             </div>
-            <div data-grid-shield className="about-fade space-y-4">
+            <div data-grid-shield data-from="right" className="about-slide space-y-4">
               <Label n="02">{t.about_label_philo}</Label>
               <p className="text-gray-300 text-[15px] sm:text-base leading-relaxed">
                 <StableText k="about_mission_desc_1" />
@@ -167,7 +174,7 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
             </div>
 
             {/* Stats */}
-            <div data-grid-shield className="about-fade md:col-span-2 grid grid-cols-3 border-t border-gray-800 pt-8">
+            <div data-grid-shield data-from="left" className="about-slide md:col-span-2 grid grid-cols-3 border-t border-gray-800 pt-8">
               {stats.map((s, i) => (
                 <div key={i} className={`flex flex-col gap-2 ${i > 0 ? 'pl-4 sm:pl-8 border-l border-gray-800' : ''}`}>
                   <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight tabular-nums">

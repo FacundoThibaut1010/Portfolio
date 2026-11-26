@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Cpu } from 'lucide-react';
-import { SkillSphere, SkillCategory, SKILL_COUNTS, SKILL_TOTAL, CORE_SKILLS } from '../SkillSphere';
+import { SkillSphere, SkillCategory, SKILL_COUNTS, SKILL_TOTAL } from '../SkillSphere';
 import { containerVariants, itemVariants } from '../../utils/animations';
 import { StableText } from '../../data/lang';
 
@@ -113,7 +113,7 @@ export const Skills = ({ t }: { t: any }) => {
                     }`}
                   >
                     {label(c)}
-                    <span className={`tabular-nums text-[10px] ${active ? 'text-orange-400/70' : 'text-gray-600'}`}>{c === null && size < 460 ? CORE_SKILLS.length : count(c)}</span>
+                    <span className={`tabular-nums text-[10px] ${active ? 'text-orange-400/70' : 'text-gray-600'}`}>{count(c)}</span>
                   </button>
                 );
               })}

@@ -107,12 +107,10 @@ export function SkillSphere({ activeCat = null, size, compact = false }: { activ
 
   // Which tags are on the sphere: everything on desktop (others dimmed by the filter);
   // on phones a lighter set — the core list, or only the selected category
-  const visible = useMemo(() => {
-    if (!compact) return SKILLS;
-    if (activeCat) return SKILLS.filter((s) => s.cat === activeCat);
-    return CORE_SKILLS.map((n) => SKILLS.find((s) => s.name === n)!).filter(Boolean);
-  }, [compact, activeCat]);
+  const visible = SKILLS;
   const positions = useMemo(() => fibonacci(visible.length), [visible]);
+  const compactRef = useRef(compact);
+  compactRef.current = compact;
   const visibleRef = useRef({ list: visible, pos: positions });
   visibleRef.current = { list: visible, pos: positions };
 
@@ -158,7 +156,7 @@ export function SkillSphere({ activeCat = null, size, compact = false }: { activ
         const isHov = hov === skill.name;
         const dimmed = cat !== null && skill.cat !== cat;
         const scale = isHov ? 1 : 0.8 + t * 0.17;
-        const opacity = isHov ? 1 : dimmed ? 0.07 + t * 0.12 : 0.22 + t * 0.78;
+        const opacity = isHov ? 1 : dimmed ? 0.07 + t * 0.12 : compactRef.current ? 0.08 + t * t * 0.92 : 0.22 + t * 0.78;
         node.style.transform = `translate3d(${sx.toFixed(1)}px, ${sy.toFixed(1)}px, 0) translate(-50%, -50%) scale(${scale.toFixed(3)})`;
         node.style.opacity = opacity.toFixed(3);
         node.style.zIndex = String(isHov ? 200 : Math.round(t * 100));
@@ -269,7 +267,7 @@ export function SkillSphere({ activeCat = null, size, compact = false }: { activ
   }, []);
 
   // Font/icon size follow the stage so the tags keep proportion on every screen
-  const fontPx = Math.round(Math.max(11, Math.min(14, size / 38)));
+  const fontPx = compact ? 10 : Math.round(Math.max(11, Math.min(14, size / 38)));
   const iconPx = Math.round(fontPx * 1.3);
   const R = size * RADIUS_RATIO;
 
@@ -312,7 +310,7 @@ export function SkillSphere({ activeCat = null, size, compact = false }: { activ
                 onPointerLeave={() => setHovered((h) => (h === skill.name ? null : h))}
               >
                 <span
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full font-mono whitespace-nowrap border transition-[color,background-color,border-color,box-shadow] duration-200"
+                  className={`flex items-center rounded-full font-mono whitespace-nowrap border transition-[color,background-color,border-color,box-shadow] duration-200 ${compact ? 'gap-1.5 px-2 py-1' : 'gap-2 px-3 py-1.5'}`}
                   style={{
                     fontSize: fontPx,
                     borderColor: isHov ? `${skill.color}99` : `${skill.color}38`,
