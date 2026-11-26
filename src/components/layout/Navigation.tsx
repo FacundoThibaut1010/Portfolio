@@ -211,7 +211,7 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
           </button>
 
           {/* Balanced grid: [number | label | spacer] — numbers line up on the side, labels stay centered on screen */}
-          <div className="grid grid-cols-[2.75rem_auto_2.75rem] items-baseline gap-y-6 [@media(max-height:700px)]:gap-y-3">
+          <div className="grid grid-cols-[2.25rem_auto_2.25rem] items-center gap-x-3 gap-y-6 [@media(max-height:700px)]:gap-y-3">
 
             {sections.map((sec, idx) => (
 
@@ -225,11 +225,11 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
                   requestAnimationFrame(() => requestAnimationFrame(() => scrollTo(sec)));
                 }}
 
-                className={`col-span-3 grid grid-cols-subgrid items-baseline text-[1.7rem] min-[400px]:text-3xl font-mono tracking-widest uppercase transition-colors ${activeSection === sec ? 'text-orange-500 font-black' : 'text-gray-500 active:text-gray-300'}`}
+                className={`col-span-3 grid grid-cols-subgrid items-center text-[1.7rem] min-[400px]:text-3xl font-mono tracking-widest uppercase transition-colors ${activeSection === sec ? 'text-orange-500 font-black' : 'text-gray-500 active:text-gray-300'}`}
 
               >
 
-                <span className="text-sm font-bold tracking-[0.15em] text-orange-500/50 text-left">0{idx + 1}</span>
+                <span className={`justify-self-end font-mono tabular-nums transition-all duration-300 ${activeSection === sec ? 'text-lg font-black text-orange-500 drop-shadow-[0_0_10px_rgba(249,115,22,0.6)]' : 'text-sm font-bold text-orange-500/35'}`}>0{idx + 1}</span>
 
                 <span className="text-left">{t[`nav_${sec}`]}</span>
                 <span aria-hidden />
