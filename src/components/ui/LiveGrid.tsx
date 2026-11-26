@@ -276,7 +276,6 @@ export const LiveGrid = ({ enabled = true }: { enabled?: boolean }) => {
       measure();
       ctx.globalCompositeOperation = 'lighter';
 
-      drawSpotlight();
 
       if (!reduced) {
         spawnTimer -= dt;
@@ -301,9 +300,13 @@ export const LiveGrid = ({ enabled = true }: { enabled?: boolean }) => {
           ctx.strokeRect(r.x - size / 2 + 0.5, r.y - size / 2 + 0.5, size, size);
         }
       }
+      // Only the pulses are kept off see-through zones (erased before the spotlight is drawn,
+      // so the cursor glow stays everywhere and no dark boxes appear)
       ctx.globalCompositeOperation = 'source-over';
-      // Guarantee: reading zones stay clean (spotlight, trails and ripples included)
       for (const b of shields) ctx.clearRect(b.x, b.y, b.w, b.h);
+      ctx.globalCompositeOperation = 'lighter';
+      drawSpotlight();
+      ctx.globalCompositeOperation = 'source-over';
       raf = requestAnimationFrame(frame);
     };
 
