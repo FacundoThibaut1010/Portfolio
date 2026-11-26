@@ -93,7 +93,7 @@ const Tour = ({ src, alt, tall }: { src: string; alt: string; tall: boolean }) =
         data-lenis-prevent
         onPointerEnter={(e) => { if (e.pointerType === 'mouse') hovering.current = true; }}
         onPointerLeave={() => { hovering.current = false; }}
-        className={`${tall ? 'h-full' : 'h-[min(62vh,560px)]'} overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
+        className={`${tall ? 'h-full' : 'h-[min(48svh,420px)] sm:h-[min(62vh,560px)]'} overflow-y-auto sm:overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
       >
         <img src={src} alt={alt} loading="lazy" draggable={false} className="w-full h-auto block" />
       </div>
@@ -124,7 +124,7 @@ const Live = ({ url, alt, tall }: { url: string; alt: string; tall: boolean }) =
   const frameH = scale > 0 ? box.h / scale : box.h;
 
   return (
-    <div ref={boxRef} className={`relative overflow-hidden bg-white ${tall ? 'flex-1 min-h-0' : 'h-[min(62vh,560px)]'}`} data-lenis-prevent>
+    <div ref={boxRef} className={`relative overflow-hidden bg-white ${tall ? 'flex-1 min-h-0' : 'h-[min(48svh,420px)] sm:h-[min(62vh,560px)]'}`} data-lenis-prevent>
       {box.w > 0 && (
         <iframe
           src={url}
@@ -198,7 +198,7 @@ const Body = ({ src, live, alt, labels, lights, mode, setMode }: Props & { light
 export const LivePreview = (props: Props) => {
   const [mode, setMode] = useState<Mode>(props.src ? 'tour' : 'live');
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-[86%] sm:w-full max-w-5xl mx-auto">
       <MacWindow
         title={props.alt}
         className="w-full rounded-2xl border border-gray-800 bg-[#16161a] overflow-hidden shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)] flex flex-col"

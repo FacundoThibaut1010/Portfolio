@@ -210,8 +210,8 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
 
           </button>
 
-          {/* Centered column: small number on top of each label, so every row is perfectly centered */}
-          <div className="flex flex-col items-center space-y-6 [@media(max-height:700px)]:space-y-3">
+          {/* Balanced grid: [number | label | spacer] — numbers line up on the side, labels stay centered on screen */}
+          <div className="grid grid-cols-[2.75rem_auto_2.75rem] items-baseline gap-y-6 [@media(max-height:700px)]:gap-y-3">
 
             {sections.map((sec, idx) => (
 
@@ -225,23 +225,24 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
                   requestAnimationFrame(() => requestAnimationFrame(() => scrollTo(sec)));
                 }}
 
-                className={`flex flex-col items-center text-center text-[1.7rem] min-[400px]:text-3xl font-mono tracking-widest uppercase transition-colors ${activeSection === sec ? 'text-orange-500 font-black' : 'text-gray-500 active:text-gray-300'}`}
+                className={`col-span-3 grid grid-cols-subgrid items-baseline text-[1.7rem] min-[400px]:text-3xl font-mono tracking-widest uppercase transition-colors ${activeSection === sec ? 'text-orange-500 font-black' : 'text-gray-500 active:text-gray-300'}`}
 
               >
 
-                <span className="text-[11px] font-bold tracking-[0.3em] text-orange-500/50 mb-1">0{idx + 1}</span>
+                <span className="text-sm font-bold tracking-[0.15em] text-orange-500/50 text-left">0{idx + 1}</span>
 
-                {t[`nav_${sec}`]}
+                <span className="text-left">{t[`nav_${sec}`]}</span>
+                <span aria-hidden />
 
               </button>
 
             ))}
 
-            <div className="mt-6"><EffectsToggles size="lg" /></div>
+            <div className="col-span-3 justify-self-center mt-6"><EffectsToggles size="lg" /></div>
 
             {lang && setLang && (
 
-              <div className="mt-4 flex items-center bg-gray-900 border border-gray-800 rounded-full p-1">
+              <div className="col-span-3 justify-self-center mt-4 flex items-center bg-gray-900 border border-gray-800 rounded-full p-1">
 
                 <button onClick={() => setLang('en')} className={`px-6 py-2 rounded-full text-xs font-mono ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-gray-500'}`}>EN</button>
 

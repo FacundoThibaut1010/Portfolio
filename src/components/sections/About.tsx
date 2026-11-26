@@ -117,13 +117,13 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
         </h2>
 
         {/* Statement */}
-        <p className="about-statement max-w-5xl text-[1.65rem] leading-[1.25] sm:text-4xl lg:text-[3.1rem] lg:leading-[1.15] font-semibold tracking-tight text-white">
+        <p data-grid-shield className="about-statement max-w-5xl text-[1.65rem] leading-[1.25] sm:text-4xl lg:text-[3.1rem] lg:leading-[1.15] font-semibold tracking-tight text-white">
           <RevealStatement k="about_statement" />
         </p>
 
         <div className="mt-14 lg:mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           {/* Identity */}
-          <div className="about-fade lg:col-span-4">
+          <div data-grid-shield className="about-fade lg:col-span-4">
             <div className="flex items-center gap-5 lg:flex-col lg:items-start">
               <div className="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 lg:w-40 lg:h-40">
                 <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-orange-500/60 via-transparent to-blue-500/40" />
@@ -153,13 +153,13 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
 
           {/* Story */}
           <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12 content-start">
-            <div className="about-fade space-y-4">
+            <div data-grid-shield className="about-fade space-y-4">
               <Label n="01">{t.about_label_who}</Label>
               <p className="text-gray-300 text-[15px] sm:text-base leading-relaxed">
                 <StableText k="about_whoami_desc" />
               </p>
             </div>
-            <div className="about-fade space-y-4">
+            <div data-grid-shield className="about-fade space-y-4">
               <Label n="02">{t.about_label_philo}</Label>
               <p className="text-gray-300 text-[15px] sm:text-base leading-relaxed">
                 <StableText k="about_mission_desc_1" />
@@ -167,7 +167,7 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
             </div>
 
             {/* Stats */}
-            <div className="about-fade md:col-span-2 grid grid-cols-3 border-t border-gray-800 pt-8">
+            <div data-grid-shield className="about-fade md:col-span-2 grid grid-cols-3 border-t border-gray-800 pt-8">
               {stats.map((s, i) => (
                 <div key={i} className={`flex flex-col gap-2 ${i > 0 ? 'pl-4 sm:pl-8 border-l border-gray-800' : ''}`}>
                   <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight tabular-nums">

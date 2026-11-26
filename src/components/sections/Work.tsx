@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { Folder, ExternalLink, X, ArrowUpRight } from 'lucide-react';
 import { containerVariants, itemVariants } from '../../utils/animations';
 import { getProjects, Project } from '../../data/projects';
@@ -170,8 +170,23 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
   }, []);
 
   // While a project is open the page shows only that project, so page progress = reading progress
-  const { scrollYProgress } = useScroll();
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  // Reading progress of an open project. Computed by hand so it can't get stuck "full" while the page
+  // is briefly short during the open transition (no scroll event happens then to correct it).
+  const readProgress = useMotionValue(0);
+  const progressWidth = useTransform(readProgress, [0, 1], ['0%', '100%']);
+  useEffect(() => {
+    if (selectedProjectIndex === null) return;
+    readProgress.set(0);
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      readProgress.set(max > 40 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(document.body);
+    const id = window.setTimeout(update, 450);
+    return () => { window.removeEventListener('scroll', update); ro.disconnect(); window.clearTimeout(id); };
+  }, [selectedProjectIndex, readProgress]);
 
   const projects = getProjects(t);
   // Both languages, so long descriptions can reserve the height of the longest one
