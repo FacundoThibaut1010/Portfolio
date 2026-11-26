@@ -142,8 +142,8 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
   ];
 
   // Panel shell: wide, no box — just a thin divider on the left and a big index number
-  const panel = 'about-panel relative shrink-0 w-[86vw] sm:w-[72vw] lg:w-[58vw] max-w-[860px] h-full flex items-center pl-6 sm:pl-10 lg:pl-14 border-l border-gray-800';
-  const bigIndex = 'absolute top-[8%] right-4 sm:right-8 font-mono font-black text-[22vw] sm:text-[12rem] leading-none text-white/[0.03] select-none pointer-events-none';
+  const panel = 'about-panel relative shrink-0 w-[86vw] sm:w-[72vw] lg:w-[58vw] max-w-[860px] h-full flex items-center pl-6 sm:pl-10 lg:pl-14';
+  const bigIndex = 'absolute top-[8%] right-4 sm:right-8 font-mono font-black text-[22vw] sm:text-[12rem] leading-none text-white/[0.08] select-none pointer-events-none';
 
   return (
     <section id="about" className="w-full relative pt-20 lg:pt-28 overflow-x-clip">
@@ -158,13 +158,15 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
           </p>
         </div>
 
-        {/* Pinned stage: the track moves sideways while you scroll */}
+        {/* Pinned stage: the track moves sideways while you scroll. The wrapper (which grows to the whole
+            pinned scroll range) is a reading zone, so the background pulses never cross this part. */}
+        <div data-grid-shield>
         <div ref={pinRef} className="relative h-[100svh] w-full overflow-hidden">
           <div className="absolute inset-x-0 top-[12%] bottom-[14%] flex items-center">
-            <div ref={trackRef} className="flex h-full items-stretch gap-0 pl-5 sm:pl-8 lg:pl-[max(2.5rem,calc((100vw-85rem)/2+2.5rem))] pr-[14vw] will-change-transform">
+            <div ref={trackRef} className="flex h-full items-stretch gap-0 pl-5 sm:pl-8 lg:pl-[max(2.5rem,calc((100vw-85rem)/2+2.5rem))] pr-[10vw] lg:pr-[calc(10vw+6rem)] will-change-transform">
               {/* 1 — Identity */}
-              <div className={panel} style={{ borderLeft: 'none', paddingLeft: 0 }}>
-                <div data-grid-shield className="about-panel-inner w-full max-w-md">
+              <div className={panel} style={{ paddingLeft: 0 }}>
+                <div className="about-panel-inner w-full max-w-md">
                   <div className="relative w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 mb-6">
                     <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-orange-500/60 via-transparent to-blue-500/40" />
                     <img src="/projets/fotoFacu.jpeg" alt="Facundo Thibaut" className="relative w-full h-full rounded-full object-cover object-top border-2 border-[#111115]" />
@@ -185,7 +187,7 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
               {/* 2 — Who I am */}
               <div className={panel}>
                 <span className={bigIndex} aria-hidden>01</span>
-                <div data-grid-shield className="about-panel-inner relative space-y-5 max-w-xl">
+                <div className="about-panel-inner relative space-y-5 max-w-xl">
                   <Label n="01">{t.about_label_who}</Label>
                   <p className="text-gray-200 text-lg sm:text-xl lg:text-2xl leading-relaxed font-medium">
                     <StableText k="about_whoami_desc" />
@@ -196,7 +198,7 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
               {/* 3 — Philosophy */}
               <div className={panel}>
                 <span className={bigIndex} aria-hidden>02</span>
-                <div data-grid-shield className="about-panel-inner relative space-y-5 max-w-xl">
+                <div className="about-panel-inner relative space-y-5 max-w-xl">
                   <Label n="02">{t.about_label_philo}</Label>
                   <p className="text-gray-200 text-lg sm:text-xl lg:text-2xl leading-relaxed font-medium">
                     <StableText k="about_mission_desc_1" />
@@ -207,13 +209,13 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
               {/* 4 — Numbers */}
               <div className={panel}>
                 <span className={bigIndex} aria-hidden>03</span>
-                <div data-grid-shield className="about-panel-inner relative w-full max-w-xl flex flex-col gap-8">
+                <div className="about-panel-inner relative w-full max-w-2xl grid grid-cols-3 gap-4 sm:gap-8">
                   {stats.map((s, i) => (
-                    <div key={i} className="flex items-baseline gap-5 border-b border-gray-800 pb-6 last:border-b-0">
-                      <span className="w-28 sm:w-36 shrink-0 text-5xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight tabular-nums">
+                    <div key={i} className="flex flex-col gap-3">
+                      <span className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight tabular-nums">
                         {s.to === null ? s.text : (<><span className="about-count" data-to={s.to}>{s.to}</span><span className="text-orange-500">{s.suffix}</span></>)}
                       </span>
-                      <span className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] text-gray-500 leading-snug">
+                      <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.18em] text-gray-500 leading-snug">
                         <StableText k={s.labelKey} />
                       </span>
                     </div>
@@ -231,6 +233,7 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
             </div>
             <span className="text-orange-500/70">→</span>
           </div>
+        </div>
         </div>
       </div>
     </section>
