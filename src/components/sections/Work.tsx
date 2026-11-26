@@ -115,7 +115,7 @@ const MobileCarousel = ({
               }}
               className={`relative snap-center shrink-0 w-[78vw] max-w-[380px] aspect-[4/3] rounded-2xl overflow-hidden transition-[transform,opacity,box-shadow] duration-300 ease-out ${
                 active
-                  ? 'scale-100 opacity-100 shadow-[0_0_0_2px_rgba(249,115,22,0.75),0_20px_50px_-15px_rgba(249,115,22,0.4)]'
+                  ? 'scale-100 opacity-100 shadow-[0_0_0_1px_rgba(255,255,255,0.18),0_20px_40px_-18px_rgba(0,0,0,0.9)]'
                   : 'scale-[0.92] opacity-55 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]'
               }`}
             >
@@ -356,7 +356,7 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
                 </div>
 
                 {/* Info strip — fixed height: shows the hovered project's details or a hint */}
-                <div data-grid-shield className="w-full max-w-3xl h-[6.5rem] sm:h-[5.5rem] mt-3 relative">
+                <div data-grid-shield className="w-full max-w-3xl h-[8.5rem] sm:h-[6.5rem] mt-3 relative">
                   <AnimatePresence mode="wait" initial={false}>
                     {activeIdx !== null ? (
                       <motion.div
@@ -367,16 +367,18 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
                         transition={{ duration: 0.18 }}
                         className="absolute inset-0 flex flex-col items-center text-center gap-2.5"
                       >
-                        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em]">
+                        {/* Numbers on their own line, technologies below */}
+                        <div className="flex flex-col items-center gap-2 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em]">
                           <span className="text-orange-500 font-bold">
                             {String(activeIdx + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
                           </span>
-                          <span className="w-1 h-1 rounded-full bg-gray-700" />
-                          {projects[activeIdx].tech.slice(0, 4).map((tech: string) => (
-                            <span key={tech} className="text-gray-400 border border-gray-800 bg-gray-900/60 rounded-full px-2.5 py-0.5 tracking-[0.12em]">
-                              {tech}
-                            </span>
-                          ))}
+                          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
+                            {projects[activeIdx].tech.slice(0, 4).map((tech: string) => (
+                              <span key={tech} className="text-gray-400 border border-gray-800 bg-gray-900/60 rounded-full px-2.5 py-0.5 tracking-[0.12em]">
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                         <p className="text-gray-400 text-xs sm:text-sm font-mono leading-relaxed line-clamp-2 max-w-2xl">
                           {projects[activeIdx].desc}
