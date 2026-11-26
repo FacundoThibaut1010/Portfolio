@@ -186,7 +186,7 @@ export const Hero = ({ t, lang, scrollTo }: { t: any, lang: string, scrollTo: (i
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          className="hidden sm:flex items-center justify-center relative min-w-0"
+          className="flex items-center justify-center relative min-w-0"
         >
           <MacWindow
             title="portfolio.tsx"
