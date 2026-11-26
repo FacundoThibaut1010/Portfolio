@@ -35,6 +35,30 @@ export type Project = {
 
 export const getProjects = (t: any): Project[] => [
   {
+    name: 'Roda',
+    type: t.proj_type_web,
+    github: 'https://rodadevelop.com/',
+    desc: t.roda_desc,
+    longDesc: t.roda_long_desc,
+    image: '/projets/previews/roda-screen.webp',
+    tech: ['Astro', 'TypeScript', 'Tailwind CSS', 'GSAP', 'Lenis', 'Vitest', 'Playwright', 'Cloudflare'],
+    mockup: { screen: '/projets/previews/roda-screen.webp', scene: 'paper', layout: 'laptop', angle: 18, glow: '#ffffff' },
+    // rodadevelop.com doesn't allow being embedded (frame-ancestors 'none'), so: tour only
+    preview: '/projets/previews/roda-full.webp',
+  },
+  {
+    name: 'Havanna',
+    type: t.proj_type_web,
+    github: 'https://havanna-rediseno.vercel.app/',
+    desc: t.havanna_desc,
+    longDesc: t.havanna_long_desc,
+    image: '/projets/previews/havanna-screen.webp',
+    tech: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'Lenis'],
+    mockup: { screen: '/projets/previews/havanna-screen.webp', scene: 'sunny', layout: 'float', angle: -20, glow: '#fff3b0' },
+    preview: '/projets/previews/havanna-full.webp',
+    live: 'https://havanna-rediseno.vercel.app/',
+  },
+  {
     name: 'AI Code Reviewer',
     type: t.proj_type_web,
     github: 'https://ai-code-reviewer-ten-mu.vercel.app/',

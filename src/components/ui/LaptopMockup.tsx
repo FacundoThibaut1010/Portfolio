@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-export type MockupScene = 'midnight' | 'ember' | 'stone' | 'sand';
-export type MockupLayout = 'laptop' | 'combo' | 'phone';
+export type MockupScene = 'midnight' | 'ember' | 'stone' | 'sand' | 'paper' | 'sunny';
+export type MockupLayout = 'laptop' | 'combo' | 'phone' | 'float';
 
 type Props = {
   screen?: string;        // desktop capture
@@ -35,6 +35,18 @@ const SCENES: Record<MockupScene, { bg: string; light: string; stoneTop: string;
     light: 'linear-gradient(110deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.05) 28%, transparent 48%)',
     stoneTop: 'linear-gradient(180deg, #8a8a8e 0%, #55565a 100%)',
     stoneFront: 'linear-gradient(180deg, #3d3e42 0%, #1d1e20 100%)',
+  },
+  paper: {
+    bg: 'radial-gradient(120% 100% at 25% 0%, #fbfaf6 0%, #ece8df 45%, #c9c3b6 100%)',
+    light: 'linear-gradient(115deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.1) 30%, transparent 50%)',
+    stoneTop: 'linear-gradient(180deg, #e7e2d8 0%, #bdb6a8 100%)',
+    stoneFront: 'linear-gradient(180deg, #a49d90 0%, #6f695f 100%)',
+  },
+  sunny: {
+    bg: 'radial-gradient(110% 95% at 50% 0%, #ffe14d 0%, #ffcc00 40%, #e0a800 80%, #9c6f00 100%)',
+    light: 'linear-gradient(120deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.08) 30%, transparent 52%)',
+    stoneTop: 'linear-gradient(180deg, #f2c200 0%, #c89a00 100%)',
+    stoneFront: 'linear-gradient(180deg, #a87f00 0%, #6b5000 100%)',
   },
   sand: {
     bg: 'radial-gradient(120% 100% at 75% 5%, #e9dfd0 0%, #c7b8a3 40%, #6f6252 85%, #3b332a 100%)',
@@ -139,6 +151,16 @@ export const LaptopMockup = ({ screen, phoneScreen, alt, scene = 'midnight', lay
         </div>
         <div className="absolute right-[10%] bottom-[9%] h-[58%]">
           <Phone screen={phoneScreen} alt={alt} transform="rotateY(-16deg) rotateZ(4deg)" />
+        </div>
+      </>
+    );
+  } else if (layout === 'float' && screen) {
+    // A laptop floating, tilted like a product shot, with its soft shadow on the floor
+    content = (
+      <>
+        <div className="absolute left-1/2 bottom-[8%] w-[62%] h-[9%] -translate-x-1/2" style={{ background: 'radial-gradient(closest-side, rgba(0,0,0,0.38), transparent)' }} />
+        <div className="absolute left-1/2 top-[14%] w-[66%]" style={{ transform: 'translateX(-50%) rotate(-7deg)' }}>
+          <Laptop screen={screen} alt={alt} angle={angle} />
         </div>
       </>
     );

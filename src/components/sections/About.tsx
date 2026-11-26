@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { translations } from '../../data/translations';
 import { useLang, StableText, type Lang } from '../../data/lang';
 import { SKILL_TOTAL } from '../SkillSphere';
+import { AboutClassic } from './AboutClassic';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,6 +54,7 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
     const pin = pinRef.current;
     const track = trackRef.current;
     if (!root || !pin || !track) return;
+    if (window.innerWidth >= 1024) return; // desktop uses the card layout
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const ctx = gsap.context(() => {
@@ -146,8 +148,9 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
   const bigIndex = 'absolute top-[8%] right-4 sm:right-8 font-mono font-black text-[22vw] sm:text-[12rem] leading-none text-white/[0.08] select-none pointer-events-none';
 
   return (
-    <section id="about" className="w-full relative pt-20 lg:pt-28 overflow-x-clip">
-      <div ref={rootRef}>
+    <section id="about" className="w-full relative overflow-x-clip">
+      <div className="hidden lg:block"><AboutClassic t={t} /></div>
+      <div ref={rootRef} className="lg:hidden pt-20">
         <div className="max-w-[85rem] mx-auto w-full px-5 sm:px-8 lg:px-10">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-mono text-gray-200 font-bold flex items-center gap-3 sm:gap-4 mb-8 lg:mb-12">
             <span className="text-orange-500 font-bold">&gt;_</span>

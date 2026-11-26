@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { Folder, ExternalLink, X, ArrowUpRight } from 'lucide-react';
+import { siAstro, siGreensock, siVitest, siCloudflare } from 'simple-icons';
 import { containerVariants, itemVariants } from '../../utils/animations';
 import { getProjects, Project } from '../../data/projects';
 import { LaptopMockup } from '../ui/LaptopMockup';
@@ -13,6 +14,14 @@ import { scrollToId, jumpToTop } from '../../utils/smoothScroll';
 // Icons that need extra scale inside their container
 const TECH_ICON_SCALE: Record<string, string> = {
   'Vite': 'scale-[1.3]',
+};
+
+// Technologies drawn with simple-icons (crisp SVG, brand color)
+const TECH_SVG: Record<string, { path: string; color: string }> = {
+  'Astro': { path: siAstro.path, color: '#BC52EE' },
+  'GSAP': { path: siGreensock.path, color: '#88CE02' },
+  'Vitest': { path: siVitest.path, color: '#6E9F18' },
+  'Cloudflare': { path: siCloudflare.path, color: '#F38020' },
 };
 
 const TECH_ICONS: Record<string, string> = {
@@ -197,7 +206,8 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
   const fitName = (name: string) => `min(${BIG}, calc(100cqw / ${(Math.max(name.length, 4) * 0.62).toFixed(2)}))`;
 
   // Desktop thumbnail sizes (smaller on tablets so the expanded card never overflows)
-  const dNorm = windowWidth < 1024 ? 110 : 145;
+  const rowWidth = Math.min(windowWidth - (windowWidth >= 1024 ? 200 : 80), 1150);
+  const dNorm = Math.max(64, Math.min(windowWidth < 1024 ? 110 : 145, Math.floor((rowWidth - (windowWidth < 1024 ? 300 : 380) - 16 * (projects.length - 1)) / Math.max(1, projects.length - 1))));
   const dExpW = Math.min(windowWidth < 1024 ? 300 : 380, Math.floor((windowHeight * 0.42) / 0.737));
   const dExpH = Math.round(dExpW * 0.737);
 
@@ -569,7 +579,28 @@ export const Work = ({ t, setIsProjectOpen, lang, setLang }: { t: any, setIsProj
                     {selectedProject.tech.map((tech: string) => {
                       const src = TECH_ICONS[tech];
                       // tech not in map at all → skip
-                      if (src === undefined) return null;
+                      const svg = TECH_SVG[tech];
+                      if (svg) {
+                        return (
+                          <div key={tech} className="flex flex-col items-center gap-2">
+                            <div className="size-20 flex items-center justify-center p-4 rounded-2xl border border-gray-800 bg-gray-900/50 hover:border-orange-500/40 transition-colors">
+                              <svg viewBox="0 0 24 24" className="w-full h-full" fill={svg.color} aria-hidden><path d={svg.path} /></svg>
+                            </div>
+                            <span className="text-gray-500 font-mono text-[10px] tracking-widest uppercase">{tech}</span>
+                          </div>
+                        );
+                      }
+                      // technologies without a logo get a clean text badge
+                      if (src === undefined) {
+                        return (
+                          <div key={tech} className="flex flex-col items-center gap-2">
+                            <div className="size-20 flex items-center justify-center p-3 rounded-2xl border border-gray-800 bg-gray-900/50 hover:border-orange-500/40 transition-colors">
+                              <span className="text-orange-500 font-mono font-bold text-[11px] tracking-widest text-center leading-tight uppercase">{tech}</span>
+                            </div>
+                            <span className="text-gray-500 font-mono text-[10px] tracking-widest uppercase">{tech}</span>
+                          </div>
+                        );
+                      }
                       // text-only badge (empty string in map)
                       if (src === '') {
                         return (
