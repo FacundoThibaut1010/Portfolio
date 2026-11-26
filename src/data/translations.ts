@@ -34,6 +34,18 @@ export const translations = {
     ide_welcome: "Welcome to my workspace",
 
     about_title: "About",
+
+    about_statement: "I design and build web products end to end: solid APIs, fast interfaces and code built to scale.",
+
+    about_label_who: "Who I am",
+
+    about_label_philo: "Philosophy",
+
+    metric_exp_long: "Years building for the web",
+
+    metric_tech_long: "Technologies in my stack",
+
+    metric_caf_long: "Coffee per deploy",
     about_dev_role: "FULL_STACK_DEV",
 
     footer_role: "Web Developer",
@@ -152,6 +164,18 @@ export const translations = {
     ide_welcome: "Bienvenido a mi espacio de trabajo",
 
     about_title: "Sobre mí",
+
+    about_statement: "Diseño y desarrollo productos web de punta a punta: APIs sólidas, interfaces rápidas y código pensado para escalar.",
+
+    about_label_who: "Quién soy",
+
+    about_label_philo: "Filosofía",
+
+    metric_exp_long: "Años construyendo para la web",
+
+    metric_tech_long: "Tecnologías en mi stack",
+
+    metric_caf_long: "Café por cada deploy",
     about_dev_role: "FULL_STACK_DEV",
 
     footer_role: "Desarrollador Web",
