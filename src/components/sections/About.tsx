@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Settings, Coffee } from 'lucide-react';
 import { StableText } from '../../data/lang';
+import { AboutDeck } from './AboutDeck';
 
 // Per-card scroll reveal: rises and fades in when the card itself reaches the screen
 const reveal = (delay = 0) => ({
@@ -27,9 +28,13 @@ export const About = ({ t }: { t: any; scrollTo?: (id: string) => void }) => {
   ];
 
   return (
-    <section id="about" className="w-full relative py-16 lg:py-20 px-5 sm:px-8 lg:px-10">
+    <section id="about" className="w-full relative lg:py-20 px-5 sm:px-8 lg:px-10">
       <div className="max-w-[85rem] mx-auto w-full">
-        <div className="space-y-5 lg:space-y-8">
+        {/* Phones/tablets: pinned scroll deck */}
+        <AboutDeck t={t} rows={rows} />
+
+        {/* Desktop: grid with per-card reveal */}
+        <div className="hidden lg:block space-y-8">
           <motion.h2 {...reveal()} className="text-3xl sm:text-4xl lg:text-5xl font-mono text-gray-200 font-bold flex items-center gap-3 sm:gap-4">
             <span className="text-orange-500 font-bold">&gt;_</span>
             {t.about_title}
