@@ -47,8 +47,8 @@ export const Typewriter = ({
       {displayedText}
       {showCursor && started && displayedText.length < text.length && (
         <motion.span
-          animate={{ opacity: [1, 0] }}
-          transition={{ duration: 0.8, repeat: Infinity, ease: "steps(2)" as any }}
+          animate={{ opacity: [1, 1, 0, 0] }}
+          transition={{ duration: 0.8, repeat: Infinity, ease: "linear", times: [0, 0.5, 0.5, 1] }}
           className="inline-block w-2 h-5 bg-orange-500 ml-1 translate-y-1"
         />
       )}

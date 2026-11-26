@@ -17,7 +17,23 @@ export const TechLogos = {
   'default': (className: string) => <Code className={className} />
 } as Record<string, (className: string) => JSX.Element>;
 
-export const getProjects = (t: any) => [
+import type { MockupScene, MockupLayout } from '../components/ui/LaptopMockup';
+
+export type Project = {
+  name: string;
+  type: string;
+  github: string;
+  desc: string;
+  longDesc: string;
+  image: string;
+  tech: string[];
+  mockup?: { screen?: string; phoneScreen?: string; scene: MockupScene; layout: MockupLayout; angle: number; glow: string };
+  preview?: string;
+  /** Deployed site that can be embedded and used for real */
+  live?: string;
+};
+
+export const getProjects = (t: any): Project[] => [
   {
     name: 'AI Code Reviewer',
     type: t.proj_type_web,
@@ -25,6 +41,8 @@ export const getProjects = (t: any) => [
     desc: t.ai_code_reviewer_desc,
     longDesc: t.ai_code_reviewer_long_desc,
     image: '/projets/aiCodeReviewer.png',
+    mockup: { screen: '/projets/previews/ai-code-reviewer-screen.webp', scene: 'midnight', layout: 'laptop', angle: -16, glow: '#6d5dfc' },
+    live: 'https://ai-code-reviewer-ten-mu.vercel.app/',
     tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Gemini API']
   },
   {
@@ -43,6 +61,9 @@ export const getProjects = (t: any) => [
     desc: t.newave_desc,
     longDesc: t.newave_long_desc,
     image: '/projets/newave.png',
+    mockup: { screen: '/projets/previews/newave-screen.webp', phoneScreen: '/projets/previews/newave-mobile.webp', scene: 'ember', layout: 'combo', angle: 8, glow: '#ffe7cf' },
+    preview: '/projets/previews/newave-full.webp',
+    live: 'https://newave-suplementos.vercel.app',
     tech: ['React', 'TypeScript', 'JavaScript', 'CSS', 'HTML', 'SQLite']
   },
   {
@@ -52,6 +73,9 @@ export const getProjects = (t: any) => [
     desc: t.invitacion_desc,
     longDesc: t.invitacion_long_desc,
     image: '/projets/invitacionDigital.png',
+    mockup: { phoneScreen: '/projets/previews/invitacion-mobile.webp', scene: 'sand', layout: 'phone', angle: 18, glow: '#f4efe6' },
+    preview: '/projets/previews/invitacion-full.webp',
+    live: 'https://invitacion-muestra.vercel.app/',
     tech: ['React.js', 'Framer Motion', 'Vite']
   }
 ];

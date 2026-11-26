@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 
 import { Cpu, Folder, Phone, Menu, X } from 'lucide-react';
 
+import { stopSmoothScroll } from '../../utils/smoothScroll';
+
+import { EffectsToggles } from '../ui/EffectsToggles';
+
 
 
 export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang }: { t: any, activeSection: string, scrollTo: (id: string) => void, sections: string[], lang?: 'en' | 'es', setLang?: (lang: 'en' | 'es') => void }) => {
@@ -16,7 +20,8 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
 
     const handleScroll = () => setScrolled(window.scrollY > 20);
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
 
@@ -25,8 +30,9 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
   useEffect(() => {
 
     document.body.style.overflow = isMobileOpen ? 'hidden' : '';
+    stopSmoothScroll(isMobileOpen);
 
-    return () => { document.body.style.overflow = ''; };
+    return () => { document.body.style.overflow = ''; stopSmoothScroll(false); };
 
   }, [isMobileOpen]);
 
@@ -38,7 +44,7 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
 
       {/* --- 1. DESKTOP NAVIGATION (Lado derecho, fijo) --- */}
 
-      <div className="fixed right-2 top-1/2 -translate-y-1/2 flex-col items-center z-50 mix-blend-screen hidden lg:flex">
+      <div data-grid-shield className="fixed right-2 top-1/2 -translate-y-1/2 flex-col items-center z-50 hidden lg:flex">
 
         <div className="absolute w-px bg-gray-800 inset-y-8 -z-10"></div>
 
@@ -122,7 +128,7 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
 
       <nav className={`fixed top-0 left-0 right-0 z-[100] lg:hidden transition-all duration-500 ${scrolled
 
-        ? 'bg-[#0f0f12]/90 backdrop-blur-xl border-b border-gray-800/50 py-3'
+        ? 'bg-[#0f0f12]/95 border-b border-gray-800/50 py-3'
 
         : 'bg-transparent py-5' // Más transparente y alto cuando está arriba
 
@@ -226,9 +232,11 @@ export const Navigation = ({ t, activeSection, scrollTo, sections, lang, setLang
 
             ))}
 
+            <div className="mt-6"><EffectsToggles size="lg" /></div>
+
             {lang && setLang && (
 
-              <div className="mt-8 flex items-center bg-gray-900 border border-gray-800 rounded-full p-1">
+              <div className="mt-4 flex items-center bg-gray-900 border border-gray-800 rounded-full p-1">
 
                 <button onClick={() => setLang('en')} className={`px-6 py-2 rounded-full text-xs font-mono ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-gray-500'}`}>EN</button>
 

@@ -2,15 +2,15 @@ export const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.09, delayChildren: 0.05 },
   },
 };
 
 export const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 18 },
   visible: {
     opacity: 1, y: 0,
-    transition: { ease: [0.215, 0.61, 0.355, 1] as const, duration: 1 },
+    transition: { ease: [0.215, 0.61, 0.355, 1] as const, duration: 0.65 },
   },
 };
 

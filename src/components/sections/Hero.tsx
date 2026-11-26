@@ -1,52 +1,114 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Play, Folder } from 'lucide-react';
-import { Typewriter } from '../ui/Typewriter';
+import { ExternalLink, Play, Folder, RotateCcw, Loader2 } from 'lucide-react';
+import { CodeTyper, CodeLine } from '../ui/CodeTyper';
+import { StableText } from '../../data/lang';
+import { MacWindow } from '../ui/MacWindow';
+import { translations } from '../../data/translations';
 
-export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }) => {
-  const [codeActive, setCodeActive] = useState(false);
-  const [waHovered, setWaHovered] = useState(false);
+// Syntax colors (One Dark)
+const C = {
+  comment: 'text-gray-500 italic',
+  keyword: 'text-[#c678dd]',
+  type: 'text-[#e5c07b]',
+  string: 'text-[#98c379]',
+  op: 'text-[#56b6c2]',
+  attr: 'text-[#e06c75]',
+  punct: 'text-gray-400',
+  plain: 'text-gray-300',
+};
 
-  // Live clock
-  const [time, setTime] = useState(() => {
-    const now = new Date();
-    return now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-  });
+type Status = 'idle' | 'typing' | 'done';
 
+const fmt = () => new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+
+/** Live clock isolated in its own component so the ticking doesn't re-render the hero and its editor. */
+const LiveClock = () => {
+  const [time, setTime] = useState(fmt);
   useEffect(() => {
-    const id = setInterval(() => {
-      const now = new Date();
-      setTime(now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }));
-    }, 1000);
+    const id = setInterval(() => setTime(fmt()), 1000);
     return () => clearInterval(id);
+  }, []);
+  return <span className="tabular-nums">{time}</span>;
+};
+
+export const Hero = ({ t, lang, scrollTo }: { t: any, lang: string, scrollTo: (id: string) => void }) => {
+  const [waHovered, setWaHovered] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
+  const [runId, setRunId] = useState(0);
+  // Caret position is written straight into the status bar (no hero re-render per typed character)
+  const caretRefs = useRef(new Set<HTMLSpanElement>());
+  const caretText = useRef('Ln 1, Col 1');
+
+  const runKey = status === 'idle' ? null : `${lang}-${runId}`;
+  // Start time of the current run, shared by every editor instance (inline and full screen)
+  const startedAt = useMemo(() => (runKey ? performance.now() : 0), [runKey]);
+
+  // Changing language clears the editor: press Run again to type it in the new language
+  useEffect(() => {
+    setStatus('idle');
+  }, [lang]);
+
+  const codeLines: CodeLine[] = useMemo(() => [
+    { indent: 0, tokens: [{ text: `// ${t.ide_welcome}`, className: C.comment }] },
+    { indent: 0, tokens: [
+      { text: 'import', className: C.keyword }, { text: ' ', className: '' },
+      { text: '{ Developer }', className: C.type }, { text: ' ', className: '' },
+      { text: 'from', className: C.keyword }, { text: ' ', className: '' },
+      { text: "'./universe'", className: C.string }, { text: ';', className: C.punct },
+    ] },
+    { indent: 0, tokens: [] },
+    { indent: 0, tokens: [
+      { text: 'const', className: C.keyword }, { text: ' ', className: '' },
+      { text: 'Portfolio', className: C.type }, { text: ' = ', className: C.op },
+      { text: '() =>', className: C.op }, { text: ' {', className: C.plain },
+    ] },
+    { indent: 1, tokens: [{ text: 'return', className: C.keyword }, { text: ' (', className: C.plain }] },
+    { indent: 2, tokens: [{ text: '<', className: C.punct }, { text: 'Developer', className: C.type }] },
+    { indent: 3, tokens: [{ text: t.ide_prop_name, className: C.attr }, { text: '=', className: C.op }, { text: `"${t.ide_val_name}"`, className: C.string }] },
+    { indent: 3, tokens: [{ text: t.ide_prop_role, className: C.attr }, { text: '=', className: C.op }, { text: `"${t.ide_val_role}"`, className: C.string }] },
+    { indent: 3, tokens: [{ text: t.ide_prop_passion, className: C.attr }, { text: '=', className: C.op }, { text: `"${t.ide_val_passion}"`, className: C.string }] },
+    { indent: 2, tokens: [{ text: '/>', className: C.punct }] },
+    { indent: 1, tokens: [{ text: ');', className: C.plain }] },
+    { indent: 0, tokens: [{ text: '};', className: C.plain }] },
+  ], [t]);
+
+  const handleDone = useCallback(() => setStatus('done'), []);
+  const handleCaret = useCallback((line: number, col: number) => {
+    caretText.current = `Ln ${line + 1}, Col ${col + 1}`;
+    caretRefs.current.forEach((el) => { el.textContent = caretText.current; });
+  }, []);
+  const caretRef = useCallback((el: HTMLSpanElement | null) => {
+    if (el) { caretRefs.current.add(el); el.textContent = caretText.current; }
   }, []);
 
   const handleRunProfile = () => {
-    setCodeActive(true);
+    setRunId((r) => r + 1);
+    setStatus('typing');
   };
 
   return (
-    <section id="hero" className="min-h-screen w-full flex flex-col items-center justify-center p-6 pt-28 md:p-12 relative">
-      <div className="max-w-[85rem] w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 xl:gap-24">
+    <section id="hero" className="min-h-[100svh] w-full flex flex-col items-center justify-center px-5 sm:px-8 lg:px-10 pt-24 pb-14 lg:py-[clamp(1.5rem,5vh,4rem)] relative">
+      <div className="max-w-[85rem] w-full mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-12 lg:gap-10 xl:gap-16 2xl:gap-24 items-center">
 
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col justify-center space-y-10"
+          className="flex flex-col justify-center min-w-0 space-y-7 sm:space-y-8 lg:space-y-[clamp(1rem,3.4vh,2.5rem)]"
         >
           {/* Status Tag — schedule label + live clock */}
           <div className="inline-flex items-center gap-3 border border-orange-500/30 bg-orange-500/10 px-4 py-2 rounded-md text-xs sm:text-sm font-mono tracking-widest text-orange-500 w-fit">
             <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-[pulse_2s_ease-in-out_infinite]"></span>
-            {t.hero_schedule} · {time}
+            {t.hero_schedule} · <LiveClock />
           </div>
 
           {/* Titles */}
-          <div className="space-y-2">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-[90px] font-bold text-white leading-tight tracking-tight">
+          <div className="space-y-1">
+            <h1 className="text-[2.6rem] min-[400px]:text-5xl sm:text-6xl lg:text-[clamp(2.6rem,min(4.6vw,9.5vh),5.4rem)] font-bold text-white leading-[1.08] tracking-tight">
               {t.hero_hello}
             </h1>
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-[90px] font-bold leading-tight tracking-tight bg-gradient-to-r from-orange-400 via-pink-400 to-blue-500 text-transparent bg-clip-text pb-2">
+            <h1 className="text-[2.6rem] min-[400px]:text-5xl sm:text-6xl lg:text-[clamp(2.6rem,min(4.6vw,9.5vh),5.4rem)] font-bold leading-[1.08] tracking-tight bg-gradient-to-r from-orange-400 via-pink-400 to-blue-500 text-transparent bg-clip-text pb-2">
               Facundo Thibaut
             </h1>
           </div>
@@ -54,16 +116,16 @@ export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }
           {/* Description */}
           <div className="space-y-4 text-base sm:text-xl text-gray-400 max-w-2xl">
             <p className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <span className="text-orange-500 font-mono text-sm sm:text-base whitespace-nowrap">&lt;{t.hero_title} /&gt;</span>
-              <span className="text-gray-200 font-medium text-sm sm:text-base">{t.hero_desc1}</span>
+              <span className="text-orange-500 font-mono text-sm sm:text-base whitespace-nowrap"><StableText values={{ en: `<${translations.en.hero_title} />`, es: `<${translations.es.hero_title} />` }} /></span>
+              <span className="text-gray-200 font-medium text-sm sm:text-base"><StableText k="hero_desc1" /></span>
             </p>
             <p className="text-sm sm:text-base text-gray-400 leading-relaxed font-mono">
-              {t.hero_desc2}
+              <StableText k="hero_desc2" />
             </p>
           </div>
 
           {/* Action Buttons Row */}
-          <div className="flex flex-col sm:flex-row gap-6 pt-6">
+          <div className="flex flex-col sm:flex-row gap-4 lg:gap-5 pt-1 lg:pt-2 max-w-[640px]">
             {/* WhatsApp button */}
             <a
               href="https://wa.me/541171247355"
@@ -75,7 +137,7 @@ export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }
               onTouchEnd={() => setWaHovered(false)}
               onTouchCancel={() => setWaHovered(false)}
               onContextMenu={(e) => e.preventDefault()}
-              className="group relative flex items-center justify-between gap-5 border border-gray-700 bg-[#16161a]/80 hover:bg-[#1e2a1e] hover:border-[#25D366]/40 rounded-2xl p-5 w-full sm:w-[380px] shadow-lg overflow-hidden transition-colors"
+              className="group relative flex items-center justify-between gap-5 border border-gray-700 bg-[#16161a]/80 hover:bg-[#1e2a1e] hover:border-[#25D366]/40 rounded-2xl p-4 xl:p-5 w-full sm:flex-[1.4] min-w-0 shadow-lg overflow-hidden transition-colors"
             >
               <div className="flex gap-5 items-center w-full">
                 <div className="bg-[#1e2a1e] border border-[#25D366]/30 rounded-lg p-3.5 flex items-center justify-center shrink-0">
@@ -101,7 +163,7 @@ export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }
               href="https://github.com/FacundoThibaut1010"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative flex items-center gap-5 border border-gray-700 bg-black/40 hover:bg-gray-800 rounded-2xl px-8 py-5 shadow-xl overflow-hidden transition-all group min-w-[240px]"
+              className="relative flex items-center gap-5 border border-gray-700 bg-black/40 hover:bg-gray-800 rounded-2xl px-6 xl:px-8 py-4 xl:py-5 shadow-xl overflow-hidden transition-all group w-full sm:flex-1 min-w-0"
             >
               <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
@@ -124,19 +186,19 @@ export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          className="flex items-center justify-center relative"
+          className="flex items-center justify-center relative min-w-0"
         >
-          <div className="w-full max-w-2xl bg-[#16161a] border border-gray-700/50 rounded-[2rem] shadow-2xl overflow-hidden relative flex flex-col">
+          <MacWindow
+            title="portfolio.tsx"
+            className={`w-full max-w-2xl bg-[#16161a] border rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl overflow-hidden relative flex flex-col transition-[border-color,box-shadow] duration-500 ${status === 'typing' ? 'border-orange-500/40 shadow-[0_0_50px_-10px_rgba(249,115,22,0.35)]' : status === 'done' ? 'border-emerald-500/25' : 'border-gray-700/50'}`}
+          >
+          {(lights, win) => (<>
 
             {/* HEADER */}
-            <div className="flex items-center justify-between px-4 sm:px-6 py-4 bg-[#1e1e24] border-b border-gray-800 shrink-0">
-              <div className="flex gap-2 sm:gap-2.5">
-                <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-[#ff5f56]"></div>
-                <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-[#ffbd2e]"></div>
-                <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-[#27c93f]"></div>
-              </div>
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 lg:py-[clamp(0.6rem,1.8vh,1rem)] bg-[#1e1e24] border-b border-gray-800 shrink-0">
+              {lights}
               <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-400 font-mono cursor-default">
-                <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-orange-500"></span>
+                <span className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-colors ${status === 'done' ? 'bg-emerald-400' : 'bg-orange-500'}`}></span>
                 portfolio.tsx
               </div>
               <div className="hidden sm:flex w-8 h-8 border border-gray-700 rounded items-center justify-center">
@@ -145,112 +207,51 @@ export const Hero = ({ t, scrollTo }: { t: any, scrollTo: (id: string) => void }
             </div>
 
             {/* CUERPO DEL CÓDIGO */}
-            <div className="flex p-4 sm:p-6 text-xs sm:text-[15px] font-mono leading-[1.8rem] sm:leading-[2rem] overflow-x-auto relative min-h-[300px] sm:min-h-[420px] w-full">
-              {/* Números de línea */}
-              <div className="flex flex-col text-gray-600 select-none pr-4 sm:pr-6 border-r border-gray-800 mr-4 sm:mr-6 text-right shrink-0">
-                {[...Array(12)].map((_, i) => (
-                  <span key={i}>{i + 1}</span>
-                ))}
-              </div>
+            <div className={`${win.maximized ? 'flex-1 min-h-0 overflow-auto font-mono text-base sm:text-lg leading-[2.2rem] px-6 py-6 sm:px-10' : 'px-3 py-4 sm:px-5 sm:py-5 lg:py-[clamp(0.75rem,2.2vh,1.5rem)] text-[11px] min-[400px]:text-xs sm:text-sm xl:text-[15px] font-mono leading-[1.5rem] sm:leading-[1.8rem] lg:leading-[clamp(1.3rem,3.3vh,2rem)] overflow-x-auto w-full'}`}>
+              <CodeTyper lines={codeLines} runKey={runKey} startedAt={startedAt} hint={t.ide_hint} onDone={handleDone} onCaretMove={handleCaret} />
+            </div>
 
-              {/* Contenedor de texto animado */}
-              <div className="flex flex-col whitespace-pre">
-                <div>
-                  <span className="text-gray-500">// </span>
-                  <span className="text-gray-500 italic">
-                    <Typewriter text={t.ide_welcome} delay={200} showCursor={true} trigger={codeActive} />
-                  </span>
-                </div>
-
-                <div>
-                  <span className="text-[#c678dd]">import</span>{' '}
-                  <span className="text-[#e5c07b]">&#123; Developer &#125;</span>{' '}
-                  <span className="text-[#c678dd]">from</span>{' '}
-                  <span className="text-[#98c379]">
-                    '<Typewriter text="./universe" delay={1000} showCursor={true} trigger={codeActive} />'
-                  </span>
-                  <span className="text-gray-400">;</span>
-                </div>
-
-                <div className="h-4"></div>
-
-                <div>
-                  <span className="text-[#c678dd]">const</span>{' '}
-                  <span className="text-[#e5c07b]">Portfolio</span>{' '}
-                  <span className="text-[#56b6c2]">=</span>{' '}
-                  <span className="text-[#56b6c2]">() =&gt;</span>{' '}
-                  <span className="text-gray-300">&#123;</span>
-                </div>
-
-                <div className="ml-4">
-                  <span className="text-[#c678dd]">return</span> <span className="text-gray-300">(</span>
-                </div>
-
-                <div className="ml-8">
-                  <span className="text-gray-400">&lt;</span><span className="text-[#e5c07b]">Developer</span>
-                </div>
-
-                <div className="ml-12">
-                  <span className="text-[#e06c75]">{t.ide_prop_name}</span><span className="text-[#56b6c2]">=</span>
-                  <span className="text-[#98c379]">"</span>
-                  <span className="text-[#98c379]"><Typewriter text={t.ide_val_name} delay={2000} showCursor={true} trigger={codeActive} /></span>
-                  <span className="text-[#98c379]">"</span>
-                </div>
-
-                <div className="ml-12">
-                  <span className="text-[#e06c75]"><Typewriter text={t.ide_prop_role} delay={3100} showCursor={false} trigger={codeActive} /></span><span className="text-[#56b6c2]">=</span>
-                  <span className="text-[#98c379]">"</span>
-                  <span className="text-[#98c379]"><Typewriter text={t.ide_val_role} delay={3200} showCursor={true} trigger={codeActive} /></span>
-                  <span className="text-[#98c379]">"</span>
-                </div>
-
-                <div className="ml-12">
-                  <span className="text-[#e06c75]"><Typewriter text={t.ide_prop_passion} delay={4300} showCursor={false} trigger={codeActive} /></span><span className="text-[#56b6c2]">=</span>
-                  <span className="text-[#98c379]">"</span>
-                  <span className="text-[#98c379]"><Typewriter text={t.ide_val_passion} delay={4400} showCursor={true} trigger={codeActive} /></span>
-                  <span className="text-[#98c379]">"</span>
-                </div>
-
-                <div className="ml-8 text-gray-400">/&gt;</div>
-                <div className="ml-4 text-gray-300">);</div>
-                <div>
-                  <span className="text-gray-300">&#125;;</span>
-                  {codeActive && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: [1, 0] }}
-                      transition={{
-                        opacity: {
-                          duration: 0.8,
-                          repeat: Infinity,
-                          ease: "steps(2)" as any,
-                          delay: 9.5
-                        }
-                      }}
-                      className="inline-block w-2 h-5 bg-orange-500 ml-1 translate-y-1"
-                    />
-                  )}
-                </div>
-              </div>
+            {/* STATUS BAR */}
+            <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-1.5 border-t border-gray-800 bg-[#1a1a20] text-[10px] sm:text-[11px] font-mono text-gray-500 shrink-0">
+              <span className="flex items-center gap-2 min-w-0">
+                <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${status === 'typing' ? 'bg-orange-500 animate-pulse' : status === 'done' ? 'bg-emerald-400' : 'bg-gray-600'}`} />
+                <span className={`truncate transition-colors ${status === 'done' ? 'text-emerald-400/90' : status === 'typing' ? 'text-orange-400/90' : ''}`}>
+                  {status === 'done' ? `✓ ${t.ide_status_done}` : status === 'typing' ? t.ide_status_typing : t.ide_status_idle}
+                </span>
+              </span>
+              <span className="shrink-0 tabular-nums">
+                <span ref={caretRef}>{caretText.current}</span><span className="hidden sm:inline"> · UTF-8</span> · TSX
+              </span>
             </div>
 
             {/* FOOTER: Botones */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5 p-4 sm:p-6 border-t border-gray-800 bg-[#16161a] mt-auto shrink-0 w-full">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 px-4 py-4 sm:px-6 lg:py-[clamp(0.75rem,2.2vh,1.5rem)] border-t border-gray-800 bg-[#16161a] mt-auto shrink-0 w-full">
               <button
                 onClick={handleRunProfile}
-                disabled={codeActive}
-                className="flex justify-center items-center gap-3 border border-orange-500/30 text-orange-500 hover:bg-orange-500/10 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl px-4 sm:px-8 py-3 sm:py-3.5 text-xs uppercase tracking-[0.2em] font-mono transition-colors w-full sm:w-auto"
+                disabled={status === 'typing'}
+                className="flex justify-center items-center gap-3 border border-orange-500/30 text-orange-500 hover:bg-orange-500/10 active:scale-[0.97] disabled:bg-orange-500/5 disabled:cursor-wait rounded-xl px-4 sm:px-6 xl:px-8 py-3 text-xs uppercase tracking-[0.2em] font-mono transition-[background-color,transform] whitespace-nowrap w-full sm:w-auto"
               >
-                <Play size={14} fill="currentColor" /> {t.btn_run_profile}
+                {status === 'typing' ? (
+                  <><Loader2 size={14} className="animate-spin" /> {t.btn_running}</>
+                ) : status === 'done' ? (
+                  <><RotateCcw size={14} /> {t.btn_rerun}</>
+                ) : (
+                  <><Play size={14} fill="currentColor" /> {t.btn_run_profile}</>
+                )}
               </button>
               <button
-                onClick={() => scrollTo('work')}
-                className="flex justify-center items-center gap-3 border border-gray-700 text-gray-300 hover:bg-gray-800 rounded-xl px-4 sm:px-8 py-3 sm:py-3.5 text-xs uppercase tracking-[0.2em] font-mono transition-colors w-full sm:w-auto"
+                onClick={async () => {
+                  // From full screen: shrink back into place first, then glide to the projects
+                  if (win.maximized) await win.restore();
+                  scrollTo('work');
+                }}
+                className="flex justify-center items-center gap-3 border border-gray-700 text-gray-300 hover:bg-gray-800 rounded-xl px-4 sm:px-6 xl:px-8 py-3 text-xs uppercase tracking-[0.2em] font-mono transition-[background-color,transform] active:scale-[0.97] whitespace-nowrap w-full sm:w-auto"
               >
                 <Folder size={14} /> {t.btn_view_projects}
               </button>
             </div>
-          </div>
+          </>)}
+          </MacWindow>
         </motion.div>
       </div>
     </section>

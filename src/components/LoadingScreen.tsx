@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TEXT = {
@@ -12,6 +12,12 @@ export const LoadingScreen = ({ onComplete }: { onComplete: (lang: 'en' | 'es') 
   const [progress, setProgress] = useState(0);
   const [visible, setVisible]   = useState(true);
   const txt = TEXT[lang];
+
+  // Refs so the progress timer never restarts and always reports the latest language
+  const langRef = useRef(lang);
+  langRef.current = lang;
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   const handleStart = useCallback(() => setStarted(true), []);
 
@@ -32,13 +38,13 @@ export const LoadingScreen = ({ onComplete }: { onComplete: (lang: 'en' | 'es') 
         clearInterval(timer);
         setTimeout(() => {
           setVisible(false);
-          setTimeout(() => onComplete(lang), 500);
+          setTimeout(() => onCompleteRef.current(langRef.current), 500);
         }, 200);
       }
     }, interval);
 
     return () => clearInterval(timer);
-  }, [started, onComplete, lang]);
+  }, [started]);
 
   return (
     <AnimatePresence>

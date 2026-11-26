@@ -5,8 +5,45 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply font-sans antialiased;
+  /* Scale all rem-based sizes down a bit on desktop */
+  @media (min-width: 1024px) {
+    html {
+      font-size: 14px;
+    }
+  }
+
+  html {
     scroll-behavior: smooth;
   }
+
+  body {
+    @apply font-sans antialiased;
+  }
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* Editor caret: blinks only while idle (solid while typing, like a real editor) */
+@keyframes caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.caret-blink {
+  animation: caret-blink 1.05s step-end infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .caret-blink { animation: none; }
 }

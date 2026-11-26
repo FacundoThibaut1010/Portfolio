@@ -1,54 +1,68 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import {
+  siSpringboot, siAngular, siPython, siNodedotjs, siReact, siTypescript, siTailwindcss,
+  siSupabase, siJavascript, siHtml5, siCss3, siGithub, siMysql, siPostgresql, siMongodb,
+  siRedis, siDocker, siGit, siNextdotjs, siNestjs, siDotnet, siPrisma, siVite, siGraphql, siVercel,
+} from 'simple-icons';
 
 // ── Skill definitions ────────────────────────────────────────────
 
+export type SkillCategory = 'frontend' | 'backend' | 'data' | 'devops';
+
 interface Skill {
   name: string;
-  color: string;
-  img: string;           // path from /public (e.g. /projets/react.png)
-  imgStyle?: React.CSSProperties;
+  cat: SkillCategory;
+  color: string;   // tuned for a dark background
+  path?: string;   // simple-icons SVG path (24x24)
+  img?: string;    // fallback image from /public
 }
 
+const icon = (si: { path: string }) => si.path;
+
+// Ordered so categories spread around the sphere instead of clumping
 const SKILLS: Skill[] = [
-  // índice 0-3 — polo norte (menos movimiento)
-  { name: 'Java',        color: '#5382a1', img: '/projets/java-logo-Photoroom.png' },
-  { name: 'MySQL',       color: '#4479A1', img: '/projets/mysql-6-logo-png-transparent-Photoroom.png' },
-  { name: 'Angular',     color: '#DD0031', img: '/projets/java-logo-angular-angularjs-software-testing-template-computer-icons-computer-font-ppt-png-clipart-thumbnail-Photoroom.png', imgStyle: { transform: 'scale(1.2)' } },
-  { name: 'Python',      color: '#3776AB', img: '/projets/hd-python-logo-symbol-transparent-png-735811696257415dbkifcuokn-Photoroom.png' },
-  // índice 4-8 — zona ecuatorial (máximo movimiento)
-  { name: 'Node.js',     color: '#339933', img: '/projets/87-879058_formation-node-js-node-js-logo-vector-Photoroom.png' },
-  { name: 'React',       color: '#61DAFB', img: '/projets/react-logo-png_seeklogo-507247-Photoroom.png' },
-  { name: 'TypeScript',  color: '#3178C6', img: '/projets/png-transparent-angularjs-typescript-javascript-vue-js-others-blue-angle-text-thumbnail-Photoroom.png', imgStyle: { transform: 'scale(1.2)' } },
-  { name: 'Tailwind',    color: '#06B6D4', img: '' },
-  { name: 'Supabase',    color: '#3ECF8E', img: '/projets/superbase.png' },
-  { name: 'JavaScript',  color: '#F7DF1E', img: '/projets/kisspng-javascript-clip-art-openclipart-logo-number-1713949408965-Photoroom.png' },
-  // índice 9-12 — polo sur (menos movimiento)
-  { name: 'Spring Boot', color: '#6DB33F', img: '/projets/spring-Photoroom.png' },
-  { name: 'HTML5',       color: '#E34F26', img: '/projets/html5_23403-Photoroom.png' },
-  { name: 'CSS3',        color: '#1572B6', img: '/projets/css-icon5555.logowik.com-Photoroom.png' },
-  { name: 'GitHub',      color: '#c9d1d9', img: '' },
+  { name: 'React',         cat: 'frontend', color: '#61DAFB', path: icon(siReact) },
+  { name: 'Java',          cat: 'backend',  color: '#f89820', img: '/projets/java-icon.png' },
+  { name: 'PostgreSQL',    cat: 'data',     color: '#6b9bdf', path: icon(siPostgresql) },
+  { name: 'Docker',        cat: 'devops',   color: '#2496ED', path: icon(siDocker) },
+  { name: 'TypeScript',    cat: 'frontend', color: '#4d94e0', path: icon(siTypescript) },
+  { name: 'Spring Boot',   cat: 'backend',  color: '#6DB33F', path: icon(siSpringboot) },
+  { name: 'MongoDB',       cat: 'data',     color: '#47A248', path: icon(siMongodb) },
+  { name: 'Next.js',       cat: 'frontend', color: '#f3f4f6', path: icon(siNextdotjs) },
+  { name: 'Node.js',       cat: 'backend',  color: '#5FA04E', path: icon(siNodedotjs) },
+  { name: 'Git',           cat: 'devops',   color: '#F05032', path: icon(siGit) },
+  { name: 'MySQL',         cat: 'data',     color: '#5d9bd1', path: icon(siMysql) },
+  { name: 'Angular',       cat: 'frontend', color: '#e2334f', path: icon(siAngular) },
+  { name: 'NestJS',        cat: 'backend',  color: '#E0234E', path: icon(siNestjs) },
+  { name: 'Tailwind',      cat: 'frontend', color: '#06B6D4', path: icon(siTailwindcss) },
+  { name: 'Redis',         cat: 'data',     color: '#FF4438', path: icon(siRedis) },
+  { name: 'Python',        cat: 'backend',  color: '#5a9fd4', path: icon(siPython) },
+  { name: 'GitHub',        cat: 'devops',   color: '#e6edf3', path: icon(siGithub) },
+  { name: 'JavaScript',    cat: 'frontend', color: '#F7DF1E', path: icon(siJavascript) },
+  { name: '.NET',          cat: 'backend',  color: '#9b7bea', path: icon(siDotnet) },
+  { name: 'Prisma',        cat: 'data',     color: '#a5b4fc', path: icon(siPrisma) },
+  { name: 'HTML5',         cat: 'frontend', color: '#E34F26', path: icon(siHtml5) },
+  { name: 'GraphQL',       cat: 'backend',  color: '#E10098', path: icon(siGraphql) },
+  { name: 'Vercel',        cat: 'devops',   color: '#f3f4f6', path: icon(siVercel) },
+  { name: 'CSS3',          cat: 'frontend', color: '#3d8fd6', path: icon(siCss3) },
+  { name: 'Supabase',      cat: 'data',     color: '#3FCF8E', path: icon(siSupabase) },
+  { name: 'Vite',          cat: 'frontend', color: '#a78bfa', path: icon(siVite) },
 ];
 
-// Inline SVG fallbacks for skills without image files
-const SVG_ICONS: Record<string, React.ReactNode> = {
-  Tailwind: (
-    <svg viewBox="0 0 24 24" fill="#06B6D4" className="w-full h-full">
-      <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z" />
-    </svg>
-  ),
-  GitHub: (
-    <svg viewBox="0 0 24 24" fill="#c9d1d9" className="w-full h-full">
-      <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577v-2.165c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22v3.293c0 .319.192.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z" />
-    </svg>
-  ),
-};
+export const SKILL_COUNTS: Record<SkillCategory, number> = SKILLS.reduce(
+  (acc, s) => ({ ...acc, [s.cat]: acc[s.cat] + 1 }),
+  { frontend: 0, backend: 0, data: 0, devops: 0 } as Record<SkillCategory, number>,
+);
+export const SKILL_TOTAL = SKILLS.length;
 
 // ── Sphere math ──────────────────────────────────────────────────
 
-const RADIUS = 175;
+// Radius as a fraction of the stage; the stage size comes from the parent (real pixels, no CSS scaling = crisp)
+const RADIUS_RATIO = 0.385;
 const N = SKILLS.length;
+const AUTO_SPEED = 0.32; // rad/s
 
-// Fibonacci sphere — distribución uniforme sobre la esfera
+// Fibonacci sphere — even distribution
 const POSITIONS = Array.from({ length: N }, (_, i) => {
   const golden = Math.PI * (3 - Math.sqrt(5));
   const y = 1 - (i / (N - 1)) * 2;
@@ -57,276 +71,257 @@ const POSITIONS = Array.from({ length: N }, (_, i) => {
   return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
 });
 
-function project3D(
-  pos: { x: number; y: number; z: number },
-  rotX: number,
-  rotY: number,
-) {
-  // Rotación en Y
-  const x1 = pos.x * Math.cos(rotY) + pos.z * Math.sin(rotY);
-  const z1 = -pos.x * Math.sin(rotY) + pos.z * Math.cos(rotY);
-  // Rotación en X
-  const y2 = pos.y * Math.cos(rotX) - z1 * Math.sin(rotX);
-  const z2 = pos.y * Math.sin(rotX) + z1 * Math.cos(rotX);
-  return { sx: x1 * RADIUS, sy: y2 * RADIUS, depth: z2 };
+type V3 = { x: number; y: number; z: number };
+
+function project(p: V3, rx: number, ry: number) {
+  const cy = Math.cos(ry), sy = Math.sin(ry), cx = Math.cos(rx), sx = Math.sin(rx);
+  const x1 = p.x * cy + p.z * sy;
+  const z1 = -p.x * sy + p.z * cy;
+  const y2 = p.y * cx - z1 * sx;
+  const z2 = p.y * sx + z1 * cx;
+  return { sx: x1, sy: y2, depth: z2 };
 }
 
-// ── Wireframe SVG ────────────────────────────────────────────────
-
+// Wireframe geometry (computed once)
 const SAMPLES = 48;
-const LAT_YS  = [-0.65, -0.3, 0, 0.3, 0.65];
-const LON_PHIS = [0, Math.PI / 4, Math.PI / 2, (3 * Math.PI) / 4];
-const CENTER   = 230; // half of 460px container
+const ring = (fn: (t: number) => V3) =>
+  Array.from({ length: SAMPLES + 1 }, (_, i) => fn((i / SAMPLES) * Math.PI * 2));
+const WIRE: V3[][] = [
+  ...[-0.66, -0.33, 0, 0.33, 0.66].map((y0) => {
+    const r = Math.sqrt(1 - y0 * y0);
+    return ring((t) => ({ x: Math.cos(t) * r, y: y0, z: Math.sin(t) * r }));
+  }),
+  ...[0, Math.PI / 4, Math.PI / 2, (3 * Math.PI) / 4].map((phi) =>
+    ring((t) => ({ x: Math.sin(t) * Math.cos(phi), y: Math.cos(t), z: Math.sin(t) * Math.sin(phi) })),
+  ),
+];
+const EQUATOR = 2;
 
-function buildPolyline(
-  pts: Array<{ x: number; y: number; z: number }>,
-  rx: number,
-  ry: number,
-) {
-  return pts
-    .map(p => {
-      const { sx, sy } = project3D(p, rx, ry);
-      return `${CENTER + sx},${CENTER + sy}`;
-    })
-    .join(' ');
-}
+// ── Component ────────────────────────────────────────────────────
 
-function SphereWireframe({ rx, ry }: { rx: number; ry: number }) {
-  const latLines = LAT_YS.map(y0 => {
-    const r = Math.sqrt(Math.max(0, 1 - y0 * y0));
-    const pts = Array.from({ length: SAMPLES + 1 }, (_, i) => {
-      const t = (i / SAMPLES) * Math.PI * 2;
-      return { x: Math.cos(t) * r, y: y0, z: Math.sin(t) * r };
-    });
-    return buildPolyline(pts, rx, ry);
-  });
-
-  const lonLines = LON_PHIS.map(phi => {
-    const pts = Array.from({ length: SAMPLES + 1 }, (_, i) => {
-      const t = (i / SAMPLES) * Math.PI * 2;
-      return {
-        x: Math.sin(t) * Math.cos(phi),
-        y: Math.cos(t),
-        z: Math.sin(t) * Math.sin(phi),
-      };
-    });
-    return buildPolyline(pts, rx, ry);
-  });
-
-  return (
-    <svg
-      className="absolute inset-0 pointer-events-none"
-      width={460}
-      height={460}
-    >
-      {/* Static boundary circle */}
-      <circle
-        cx={CENTER} cy={CENTER} r={RADIUS}
-        fill="none"
-        stroke="rgba(249,115,22,0.22)"
-        strokeWidth="1"
-      />
-      {/* Rotating latitude lines */}
-      {latLines.map((pts, i) => (
-        <polyline
-          key={`lat-${i}`}
-          points={pts}
-          fill="none"
-          stroke={i === 2 ? 'rgba(249,115,22,0.35)' : 'rgba(249,115,22,0.18)'}
-          strokeWidth={i === 2 ? '1' : '0.7'}
-        />
-      ))}
-      {/* Rotating longitude lines */}
-      {lonLines.map((pts, i) => (
-        <polyline
-          key={`lon-${i}`}
-          points={pts}
-          fill="none"
-          stroke="rgba(249,115,22,0.18)"
-          strokeWidth="0.7"
-        />
-      ))}
-    </svg>
-  );
-}
-
-// ── Main component ───────────────────────────────────────────────
-
-export function SkillSphere() {
-  const [rot, setRot] = useState({ x: 0.38, y: 0 });
-  const [paused, setPaused] = useState(false);
-  const [dragging, setDragging] = useState(false);
+export function SkillSphere({ activeCat = null, size }: { activeCat?: SkillCategory | null; size: number }) {
   const [hovered, setHovered] = useState<string | null>(null);
-  const mouse         = useRef({ x: 0, y: 0 });
-  const containerRef  = useRef<HTMLDivElement>(null);
-  const touchInSphere = useRef(false);
 
-  useEffect(() => {
-    if (paused) return;
-    let raf: number;
-    let prev = performance.now();
-    const tick = (now: number) => {
-      const dt = (now - prev) / 1000;
-      prev = now;
-      setRot(r => ({ ...r, y: r.y + dt * 0.45 }));
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [paused]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const wireRefs = useRef<(SVGPolylineElement | null)[]>([]);
 
-  // Native touch listeners — only rotate when touch starts inside the sphere circle
+  // Animation state lives in refs: the loop writes straight to the DOM, no React re-render per frame
+  const rot = useRef({ x: 0.38, y: 0 });
+  const vel = useRef({ x: 0, y: 0 });
+  const drag = useRef<{ id: number; x: number; y: number; t: number } | null>(null);
+  const hoveredRef = useRef<string | null>(null);
+  const catRef = useRef<SkillCategory | null>(activeCat);
+  const speed = useRef(AUTO_SPEED);
+  const sizeRef = useRef(size);
+  hoveredRef.current = hovered;
+  catRef.current = activeCat;
+  sizeRef.current = size;
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const isInsideSphere = (clientX: number, clientY: number) => {
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width  / 2;
-      const cy = rect.top  + rect.height / 2;
-      const r  = Math.min(rect.width, rect.height) / 2;
-      return Math.sqrt((clientX - cx) ** 2 + (clientY - cy) ** 2) <= r;
+    let raf = 0;
+    let running = false;
+    let prev = 0;
+
+    const render = () => {
+      const { x: rx, y: ry } = rot.current;
+      const R = sizeRef.current * RADIUS_RATIO;
+      const C = sizeRef.current / 2;
+      const cat = catRef.current;
+      const hov = hoveredRef.current;
+      for (let i = 0; i < N; i++) {
+        const node = itemRefs.current[i];
+        if (!node) continue;
+        const pr = project(POSITIONS[i], rx, ry);
+        const sx = pr.sx * R, sy = pr.sy * R, depth = pr.depth;
+        const t = (depth + 1) / 2; // 0 back · 1 front
+        const skill = SKILLS[i];
+        const isHov = hov === skill.name;
+        const dimmed = cat !== null && skill.cat !== cat;
+        const scale = isHov ? 1 : 0.8 + t * 0.17;
+        const opacity = isHov ? 1 : dimmed ? 0.07 + t * 0.12 : 0.22 + t * 0.78;
+        node.style.transform = `translate3d(${sx.toFixed(1)}px, ${sy.toFixed(1)}px, 0) translate(-50%, -50%) scale(${scale.toFixed(3)})`;
+        node.style.opacity = opacity.toFixed(3);
+        node.style.zIndex = String(isHov ? 200 : Math.round(t * 100));
+      }
+      for (let w = 0; w < WIRE.length; w++) {
+        const line = wireRefs.current[w];
+        if (!line) continue;
+        let pts = '';
+        for (const p of WIRE[w]) {
+          const q = project(p, rx, ry);
+          pts += `${(C + q.sx * R).toFixed(1)},${(C + q.sy * R).toFixed(1)} `;
+        }
+        line.setAttribute('points', pts);
+      }
     };
 
-    const onTouchStart = (e: TouchEvent) => {
-      const { clientX, clientY } = e.touches[0];
-      if (!isInsideSphere(clientX, clientY)) { touchInSphere.current = false; return; }
-      touchInSphere.current = true;
-      e.preventDefault();
-      setPaused(true);
-      mouse.current = { x: clientX, y: clientY };
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, (now - prev) / 1000);
+      prev = now;
+      if (!drag.current) {
+        // Auto-rotation eases down while hovering a tag, back up afterwards
+        const target = reduced ? 0 : hoveredRef.current ? 0.04 : AUTO_SPEED;
+        speed.current += (target - speed.current) * Math.min(1, dt * 4);
+        // Inertia from a drag decays smoothly
+        const decay = Math.exp(-dt * 2.6);
+        vel.current.x *= decay;
+        vel.current.y *= decay;
+        rot.current.y += (speed.current + vel.current.y) * dt;
+        rot.current.x += vel.current.x * dt;
+        // Gently return the tilt toward the resting angle
+        rot.current.x += (0.38 - rot.current.x) * Math.min(1, dt * 0.8);
+      }
+      render();
+      raf = requestAnimationFrame(frame);
     };
 
-    const onTouchMove = (e: TouchEvent) => {
-      if (!touchInSphere.current) return;
-      e.preventDefault();
-      const { clientX, clientY } = e.touches[0];
-      const dx = clientX - mouse.current.x;
-      const dy = clientY - mouse.current.y;
-      mouse.current = { x: clientX, y: clientY };
-      setRot(r => ({ x: r.x - dy * 0.005, y: r.y + dx * 0.005 }));
+    const start = () => {
+      if (running) return;
+      running = true;
+      prev = performance.now();
+      raf = requestAnimationFrame(frame);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
     };
 
-    const onTouchEnd = () => {
-      if (!touchInSphere.current) return;
-      touchInSphere.current = false;
-      setDragging(false);
-      setPaused(false);
+    // Only animate while on screen and the tab is visible
+    let inView = false;
+    const sync = () => (inView && !document.hidden ? start() : stop());
+    const io = new IntersectionObserver(([e]) => { inView = e.isIntersecting; sync(); }, { rootMargin: '100px' });
+    io.observe(el);
+    document.addEventListener('visibilitychange', sync);
+    const checkOnScreen = () => {
+      const r = el.getBoundingClientRect();
+      inView = r.bottom > -100 && r.top < window.innerHeight + 100 && r.width > 0;
+      sync();
     };
+    const watchdog = window.setInterval(checkOnScreen, 400);
+    window.addEventListener('scroll', checkOnScreen, { passive: true });
+    requestAnimationFrame(checkOnScreen);
+    render();
 
-    el.addEventListener('touchstart', onTouchStart, { passive: false });
-    el.addEventListener('touchmove',  onTouchMove,  { passive: false });
-    el.addEventListener('touchend',   onTouchEnd);
+    // Pointer drag (mouse + touch). touch-action: pan-y keeps vertical page scroll working on phones.
+    const onDown = (e: PointerEvent) => {
+      drag.current = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now() };
+      vel.current = { x: 0, y: 0 };
+      el.setPointerCapture(e.pointerId);
+    };
+    const onMove = (e: PointerEvent) => {
+      const d = drag.current;
+      if (!d || d.id !== e.pointerId) return;
+      const now = performance.now();
+      const dx = e.clientX - d.x;
+      const dy = e.clientY - d.y;
+      const dts = Math.max(0.008, (now - d.t) / 1000);
+      rot.current.y += dx * 0.006;
+      rot.current.x = Math.max(-1.2, Math.min(1.2, rot.current.x - dy * 0.006));
+      vel.current = { x: (-dy * 0.006) / dts * 0.6, y: (dx * 0.006) / dts * 0.6 };
+      drag.current = { id: d.id, x: e.clientX, y: e.clientY, t: now };
+      if (!running) render();
+    };
+    const onUp = (e: PointerEvent) => {
+      if (drag.current?.id !== e.pointerId) return;
+      drag.current = null;
+      // Clamp the fling so it never spins wildly
+      vel.current.x = Math.max(-4, Math.min(4, vel.current.x));
+      vel.current.y = Math.max(-6, Math.min(6, vel.current.y));
+    };
+    el.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerup', onUp);
+    el.addEventListener('pointercancel', onUp);
+    el.addEventListener('lostpointercapture', onUp);
+
     return () => {
-      el.removeEventListener('touchstart', onTouchStart);
-      el.removeEventListener('touchmove',  onTouchMove);
-      el.removeEventListener('touchend',   onTouchEnd);
+      stop();
+      io.disconnect();
+      window.clearInterval(watchdog);
+      window.removeEventListener('scroll', checkOnScreen);
+      document.removeEventListener('visibilitychange', sync);
+      el.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerup', onUp);
+      el.removeEventListener('pointercancel', onUp);
+      el.removeEventListener('lostpointercapture', onUp);
     };
   }, []);
 
-  const onMouseDown = useCallback((e: React.MouseEvent) => {
-    setDragging(true);
-    setPaused(true);
-    mouse.current = { x: e.clientX, y: e.clientY };
-  }, []);
-
-  const onMouseMove = useCallback((e: React.MouseEvent) => {
-    setPaused(true);
-    if (!dragging) return;
-    const dx = e.clientX - mouse.current.x;
-    const dy = e.clientY - mouse.current.y;
-    mouse.current = { x: e.clientX, y: e.clientY };
-    setRot(r => ({ x: r.x - dy * 0.005, y: r.y + dx * 0.005 }));
-  }, [dragging]);
-
-  const onRelease = useCallback(() => {
-    setDragging(false);
-    setPaused(false);
-  }, []);
-
-  // Proyectar y ordenar de atrás hacia adelante (painter's algorithm)
-  const items = POSITIONS.map((pos, i) => {
-    const { sx, sy, depth } = project3D(pos, rot.x, rot.y);
-    return { sx, sy, depth, skill: SKILLS[i] };
-  }).sort((a, b) => a.depth - b.depth);
+  // Font/icon size follow the stage so the tags keep proportion on every screen
+  const fontPx = Math.round(Math.max(11, Math.min(14, size / 38)));
+  const iconPx = Math.round(fontPx * 1.3);
+  const R = size * RADIUS_RATIO;
 
   return (
     <div
       ref={containerRef}
       className="relative select-none cursor-grab active:cursor-grabbing"
-      style={{ width: 460, height: 460 }}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onRelease}
-      onMouseLeave={onRelease}
+      style={{ width: size, height: size, touchAction: 'pan-y' }}
     >
-      {/* Ambient center glow */}
+      {/* Ambient glow */}
       <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(circle at 50% 50%, rgba(249,115,22,0.06) 0%, rgba(6,182,212,0.03) 40%, transparent 68%)',
-        }}
+        className="absolute inset-0 pointer-events-none rounded-full"
+        style={{ background: 'radial-gradient(circle at 50% 50%, rgba(249,115,22,0.08) 0%, rgba(6,182,212,0.035) 38%, transparent 66%)' }}
       />
 
-      {/* Wireframe sphere */}
-      <SphereWireframe rx={rot.x} ry={rot.y} />
+      {/* Wireframe */}
+      <svg className="absolute inset-0 pointer-events-none" width={size} height={size} aria-hidden>
+        <circle cx={size / 2} cy={size / 2} r={R} fill="none" stroke="rgba(249,115,22,0.22)" strokeWidth="1" />
+        {WIRE.map((_, i) => (
+          <polyline
+            key={i}
+            ref={(n) => { wireRefs.current[i] = n; }}
+            fill="none"
+            stroke={i === EQUATOR ? 'rgba(249,115,22,0.32)' : 'rgba(249,115,22,0.14)'}
+            strokeWidth={i === EQUATOR ? 1 : 0.7}
+          />
+        ))}
+      </svg>
 
-      {/* Skill tags */}
-      {items.map(({ sx, sy, depth, skill }) => {
-        const t = (depth + 1) / 2;          // 0=back · 1=front
-        const isHov = hovered === skill.name;
-        const scale   = isHov ? 1.18 : 0.52 + t * 0.56;
-        const opacity = isHov ? 1    : 0.12 + t * 0.86;
-
-        return (
-          <div
-            key={skill.name}
-            className="absolute"
-            style={{
-              left: '50%',
-              top: '50%',
-              transform: `translate(calc(-50% + ${sx}px), calc(-50% + ${sy}px)) scale(${scale})`,
-              opacity,
-              zIndex: Math.round(t * 100),
-            }}
-            onMouseEnter={e => { e.stopPropagation(); setHovered(skill.name); }}
-            onMouseLeave={e => { e.stopPropagation(); setHovered(null); }}
-          >
-            <span
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[13px] whitespace-nowrap border"
-              style={{
-                borderColor: isHov ? `${skill.color}80` : `${skill.color}40`,
-                background:  isHov ? `${skill.color}18` : `${skill.color}08`,
-                color:       isHov ? skill.color : '#9ca3af',
-                boxShadow:   isHov
-                  ? `0 0 16px ${skill.color}55, 0 0 40px ${skill.color}20`
-                  : 'none',
-                transition: 'all 0.12s ease',
-              }}
-            >
-              {/* Icon */}
-              <span
-                className="shrink-0 overflow-hidden flex items-center justify-center"
-                style={{ width: 16, height: 16 }}
+      {/* Tags — position/scale/opacity are written by the animation loop */}
+      <ul className="absolute inset-0" aria-label="Skills">
+        {SKILLS.map((skill, i) => {
+          const isHov = hovered === skill.name;
+          return (
+            <li key={skill.name} className="contents">
+              <div
+                ref={(n) => { itemRefs.current[i] = n; }}
+                className="absolute left-1/2 top-1/2 will-change-transform"
+                onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHovered(skill.name); }}
+                onPointerLeave={() => setHovered((h) => (h === skill.name ? null : h))}
               >
-                {skill.img ? (
-                  <img
-                    src={skill.img}
-                    alt={skill.name}
-                    draggable={false}
-                    className="w-full h-full object-contain"
-                    style={skill.imgStyle}
-                  />
-                ) : (
-                  SVG_ICONS[skill.name]
-                )}
-              </span>
-              {skill.name}
-            </span>
-          </div>
-        );
-      })}
+                <span
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full font-mono whitespace-nowrap border transition-[color,background-color,border-color,box-shadow] duration-200"
+                  style={{
+                    fontSize: fontPx,
+                    borderColor: isHov ? `${skill.color}99` : `${skill.color}38`,
+                    background: isHov ? `${skill.color}1f` : 'rgba(17,17,21,0.75)',
+                    color: isHov ? skill.color : '#c4c7ce',
+                    boxShadow: isHov ? `0 0 18px ${skill.color}55, 0 0 42px ${skill.color}22` : 'none',
+                  }}
+                >
+                  <span className="shrink-0 flex items-center justify-center" style={{ width: iconPx, height: iconPx }}>
+                    {skill.path ? (
+                      <svg viewBox="0 0 24 24" width={iconPx} height={iconPx} fill={skill.color} aria-hidden shapeRendering="geometricPrecision">
+                        <path d={skill.path} />
+                      </svg>
+                    ) : (
+                      <img src={skill.img} alt="" draggable={false} className="w-full h-full object-contain" />
+                    )}
+                  </span>
+                  {skill.name}
+                </span>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

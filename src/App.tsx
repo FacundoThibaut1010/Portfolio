@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 
-import { translations, TranslationKey } from './data/translations';
+import { translations } from './data/translations';
+
+import { initSmoothScroll, scrollToId } from './utils/smoothScroll';
+
+import { LangContext } from './data/lang';
+
+import { LiveGrid } from './components/ui/LiveGrid';
+
+import { useEffects } from './data/effects';
 
 import { Navigation } from './components/layout/Navigation';
 
@@ -28,7 +36,7 @@ const sections = ['hero', 'about', 'skills', 'work', 'contact'];
 
 const PortfolioUI = () => {
 
-  const [lang, setLang] = useState<'en' | 'es'>('en');
+  const [lang, setLang] = useState<'en' | 'es'>('es');
 
   const t = translations[lang] as any;
 
@@ -36,68 +44,71 @@ const PortfolioUI = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const { pulses } = useEffects();
+
 
   const [activeSection, setActiveSection] = useState('hero');
 
+  // Inertial smooth scrolling (wheel / trackpad)
+  useEffect(() => initSmoothScroll(), []);
+
+  // Keep <html lang> in sync so the browser never thinks the page needs translating
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
   // No locking scroll — contact/footer se ocultan cuando hay proyecto abierto
 
-  // ScrollSpy
-
+  // ScrollSpy — deterministic: the active section is the one crossing a line at 40% of the screen.
+  // (The old observer only compared sections whose visibility had *just changed*, so it could get stuck.)
   useEffect(() => {
-
-
-
-    
-    const observer = new IntersectionObserver((entries) => {
-      // 1. Filtramos solo las secciones que se están viendo
-      const visibleSections = entries.filter(entry => entry.isIntersecting);
-
-      if (visibleSections.length > 0) {
-        // 2. Buscamos la que tenga mayor "intersectionRatio" 
-        // (la que ocupe más porcentaje de la pantalla actual)
-        const bestSection = visibleSections.reduce((prev, current) => {
-          return (prev.intersectionRatio > current.intersectionRatio) ? prev : current;
-        });
-
-        setActiveSection(bestSection.target.id);
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const line = window.innerHeight * 0.4;
+      let current = sections[0];
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= line) current = id;
       }
-    }, {
-      // 3. Configuramos varios umbrales para que sea muy sensible al movimiento
-      threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-      // Bajamos el margen superior para que el cambio sea inmediato al scrollear
-      rootMargin: "-10% 0px -40% 0px"
-    });
-
-    sections.forEach((sec) => {
-      const el = document.getElementById(sec);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
+      // At the very bottom the last section wins even if it's short
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (atBottom) {
+        const last = [...sections].reverse().find((id) => document.getElementById(id));
+        if (last) current = last;
+      }
+      setActiveSection((prev) => (prev === current ? prev : current));
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(update); };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    const interval = window.setInterval(schedule, 600); // safety net (e.g. layout changes without scrolling)
+    schedule();
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      window.clearInterval(interval);
+      cancelAnimationFrame(raf);
+    };
   }, [isProjectOpen]);
 
 
 
-  const scrollTo = (id: string) => {
-
-    const el = document.getElementById(id);
-
-    if (el) {
-
-      el.scrollIntoView({ behavior: 'smooth' });
-
-    }
-
-  };
+  const scrollTo = (id: string) => scrollToId(id);
 
 
 
   return (
-    <div className={`relative bg-[#111115] text-gray-300 font-sans selection:bg-orange-500/30 selection:text-orange-500 min-h-screen selection:backdrop-blur-sm overflow-x-hidden w-full ${isProjectOpen ? 'md:overflow-auto overflow-hidden' : ''}`}>
+    <LangContext.Provider value={lang}>
+    <div className={`relative bg-[#111115] text-gray-300 font-sans selection:bg-orange-500/30 selection:text-orange-500 min-h-screen overflow-x-hidden w-full ${isProjectOpen ? 'md:overflow-auto overflow-hidden' : ''}`}>
       {isLoading && <LoadingScreen onComplete={(selectedLang) => { setIsLoading(false); setLang(selectedLang); }} />}
 
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.2]" style={{ backgroundImage: `linear-gradient(to right, #f9741686 1px, transparent 1px), linear-gradient(to bottom, #f9741686 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
+
+      {/* Living layer on top of the grid: pulses, cursor spotlight, click bursts */}
+      <LiveGrid enabled={pulses && !isProjectOpen} />
 
       {/* MODIFICACIÓN: El Nav desaparece si isProjectOpen es true */}
       {!isProjectOpen && (
@@ -110,8 +121,8 @@ const PortfolioUI = () => {
         </div>
       )}
 
-      <div className="relative z-10 w-full flex flex-col">
-        {!isProjectOpen && <Hero t={t} scrollTo={scrollTo} />}
+      <div className="relative z-10 w-full flex flex-col lg:pr-[4.5rem]">
+        {!isProjectOpen && <Hero t={t} lang={lang} scrollTo={scrollTo} />}
         {!isProjectOpen && <About t={t} scrollTo={scrollTo} />}
         {!isProjectOpen && <Skills t={t} />}
 
@@ -121,8 +132,9 @@ const PortfolioUI = () => {
         {!isProjectOpen && <Contact t={t} />}
       </div>
 
-      {!isProjectOpen && <Footer t={t} />}
+      {!isProjectOpen && <div className="lg:pr-[4.5rem]"><Footer t={t} /></div>}
     </div>
+    </LangContext.Provider>
   );
 
 };
